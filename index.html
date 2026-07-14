@@ -274,17 +274,22 @@ header, main, footer, section { position: relative; z-index: 2; }
 .portfolio-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
 .portfolio-card { background: var(--surface); border: 1px solid var(--border); border-radius: 22px; overflow: hidden; transition: transform .5s var(--ease-out), border-color .5s; }
 .portfolio-card:hover { transform: translateY(-10px); border-color: rgba(167,139,250,.25); }
-.portfolio-card:hover .portfolio-thumb img { transform: scale(1.08); }
-.portfolio-thumb { height: 220px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
-.portfolio-thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform .8s var(--ease-out); }
+.portfolio-thumb { height: 220px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; cursor: none; }
 .thumb-curtain { position: absolute; inset: 0; z-index: 3; background: var(--bg-2); transform-origin: left center; transition: transform 1s var(--ease-out); }
 .portfolio-card.visible .thumb-curtain { transform: scaleX(0); }
+.thumb-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.thumb-img--muted { filter: grayscale(0.9) brightness(0.42) contrast(1.08) saturate(0.6); transition: filter .7s var(--ease-out); }
+.thumb-img--vivid { clip-path: circle(0px at 50% 50%); will-change: clip-path; }
+.portfolio-thumb:hover .thumb-img--muted { filter: grayscale(0.75) brightness(0.5) contrast(1.08) saturate(0.7); }
+.thumb-lens-ring { position: absolute; width: 1px; height: 1px; border: 1px solid rgba(232,230,240,.5); border-radius: 50%; pointer-events: none; z-index: 4; opacity: 0; transition: opacity .3s ease; transform: translate(-50%,-50%); mix-blend-mode: difference; }
+.portfolio-thumb:hover .thumb-lens-ring { opacity: 1; }
 .thumb-label { position: absolute; top: 14px; left: 14px; font-family: var(--font-mono); font-size: .7rem; background: rgba(0,0,0,.4); backdrop-filter: blur(8px); border: 1px solid var(--border-2); padding: 5px 10px; border-radius: 8px; color: var(--text); letter-spacing: .5px; z-index: 2; }
 .portfolio-body { padding: 26px 26px 30px; }
 .portfolio-body .category { font-family: var(--font-mono); font-size: .72rem; color: var(--accent); letter-spacing: .5px; margin-bottom: 8px; text-transform: uppercase; }
 .portfolio-body h3 { font-family: var(--font-display); font-size: 1.15rem; font-weight: 600; margin-bottom: 8px; }
 .portfolio-body p { color: var(--muted); font-size: .9rem; font-weight: 300; line-height: 1.7; }
 @media (max-width: 860px) { .portfolio-grid { grid-template-columns: 1fr; } }
+@media (hover:none),(pointer:coarse) { .thumb-img--vivid{ clip-path:none !important; } .thumb-lens-ring{ display:none; } }
  
 #testimonials { padding: 120px 0; overflow: hidden; }
 #testimonials .section-head { padding: 0 8%; margin-bottom: 60px; }
@@ -634,7 +639,9 @@ footer { padding: 40px 8%; border-top: 1px solid var(--border); display: flex; j
     <div class="portfolio-card reveal delay-1">
       <div class="portfolio-thumb">
     <div class="thumb-curtain"></div>
-    <img src="pizzax.PNG" alt="PizzaX Website">
+    <img class="thumb-img thumb-img--muted" src="pizzax.PNG" alt="PizzaX Website">
+    <img class="thumb-img thumb-img--vivid" src="pizzax.PNG" alt="">
+    <div class="thumb-lens-ring"></div>
     <span class="thumb-label">Restaurant</span>
 </div>
       <div class="portfolio-body">
@@ -646,7 +653,9 @@ footer { padding: 40px 8%; border-top: 1px solid var(--border); display: flex; j
     <div class="portfolio-card reveal delay-2">
       <div class="portfolio-thumb">
     <div class="thumb-curtain"></div>
-    <img src="pulsefit.PNG" alt="Pulse fit Website">
+    <img class="thumb-img thumb-img--muted" src="pulsefit.PNG" alt="Pulse fit Website">
+    <img class="thumb-img thumb-img--vivid" src="pulsefit.PNG" alt="">
+    <div class="thumb-lens-ring"></div>
     <span class="thumb-label">Fitness</span>
 </div>
       <div class="portfolio-body">
@@ -658,7 +667,9 @@ footer { padding: 40px 8%; border-top: 1px solid var(--border); display: flex; j
     <div class="portfolio-card reveal delay-3">
       <div class="portfolio-thumb">
     <div class="thumb-curtain"></div>
-    <img src="pets paw.PNG" alt="Pets paw website">
+    <img class="thumb-img thumb-img--muted" src="pets paw.PNG" alt="Pets paw website">
+    <img class="thumb-img thumb-img--vivid" src="pets paw.PNG" alt="">
+    <div class="thumb-lens-ring"></div>
     <span class="thumb-label">Veterinary</span>
 </div>
       <div class="portfolio-body">
@@ -952,6 +963,32 @@ footer { padding: 40px 8%; border-top: 1px solid var(--border); display: flex; j
     });
     el.addEventListener('mouseleave', function(){ el.style.transform = ''; });
   });
+ 
+  /* PORTFOLIO REVEAL-ON-HOVER — muted image, cursor-spotlight reveals full color */
+  (function(){
+    if(reduced) return;
+    document.querySelectorAll('.portfolio-thumb').forEach(function(thumb){
+      var vivid = thumb.querySelector('.thumb-img--vivid');
+      var ring = thumb.querySelector('.thumb-lens-ring');
+      if(!vivid) return;
+      var mx = 50, my = 50, targetR = 0, curR = 0, running = true;
+      function setFromEvent(e){
+        var r = thumb.getBoundingClientRect();
+        mx = ((e.clientX - r.left) / r.width) * 100;
+        my = ((e.clientY - r.top) / r.height) * 100;
+        if(ring){ ring.style.left = (e.clientX - r.left) + 'px'; ring.style.top = (e.clientY - r.top) + 'px'; }
+      }
+      thumb.addEventListener('mouseenter', function(e){ targetR = 46; setFromEvent(e); });
+      thumb.addEventListener('mousemove', setFromEvent);
+      thumb.addEventListener('mouseleave', function(){ targetR = 0; });
+      (function loop(){
+        if(!running) return;
+        curR += (targetR - curR) * 0.16;
+        vivid.style.clipPath = 'circle(' + curR.toFixed(1) + '% at ' + mx.toFixed(1) + '% ' + my.toFixed(1) + '%)';
+        requestAnimationFrame(loop);
+      })();
+    });
+  })();
  
   if(window.matchMedia('(hover:hover) and (pointer:fine)').matches){
     var dot = document.getElementById('c-dot');
