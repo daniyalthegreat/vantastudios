@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -162,7 +161,7 @@ header, main, footer, section { position: relative; z-index: 2; }
 .close-x:hover { background: var(--surface); border-color: var(--accent); }
  
 .hero { min-height: 100vh; display: flex; align-items: center; padding: 160px 8% 100px; }
-.hero-inner { width: 100%; display: grid; grid-template-columns: 1.1fr .9fr; gap: 60px; align-items: center; }
+.hero-inner { width: 100%; display: grid; grid-template-columns: 1.1fr .9fr; gap: 60px; align-items: center; will-change: transform, opacity; }
  
 .hero-eyebrow { display: inline-flex; align-items: center; gap: 10px; font-family: var(--font-mono); font-size: .8rem; color: var(--accent); letter-spacing: .5px; margin-bottom: 26px; opacity: 0; animation: riseIn .9s .1s var(--ease-out) forwards; }
 .hero-eyebrow::before { content: ''; width: 24px; height: 1px; background: var(--accent); }
@@ -231,27 +230,37 @@ header, main, footer, section { position: relative; z-index: 2; }
 .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
 .service-card { background: var(--surface); border: 1px solid var(--border); border-radius: 22px; padding: 40px 36px; position: relative; overflow: hidden; transition: transform .5s var(--ease-out), border-color .5s, background .5s; }
 .service-card::after { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 60% 0%, var(--accent-soft), transparent 60%); opacity: 0; transition: opacity .5s; }
+.service-card::before { content:''; position:absolute; inset:0; z-index:0; background: radial-gradient(280px circle at var(--mx,50%) var(--my,0%), rgba(167,139,250,.16), transparent 62%); opacity:0; transition: opacity .45s; pointer-events:none; }
 .service-card:hover { transform: translateY(-8px); border-color: rgba(167,139,250,.25); background: var(--surface-2); }
 .service-card:hover::after { opacity: 1; }
-.svc-icon { width: 48px; height: 48px; border-radius: 14px; background: var(--accent-soft); border: 1px solid rgba(167,139,250,.2); display: flex; align-items: center; justify-content: center; color: var(--accent); font-size: 1.1rem; margin-bottom: 28px; position: relative; z-index: 1; }
+.service-card:hover::before { opacity: 1; }
+.svc-icon { width: 48px; height: 48px; border-radius: 14px; background: var(--accent-soft); border: 1px solid rgba(167,139,250,.2); display: flex; align-items: center; justify-content: center; color: var(--accent); font-size: 1.1rem; margin-bottom: 28px; position: relative; z-index: 1; transition: transform .5s var(--ease-out), border-color .4s; }
+.service-card:hover .svc-icon { transform: rotate(-10deg) scale(1.1); border-color: var(--accent); }
 .service-card h3 { font-family: var(--font-display); font-size: 1.3rem; font-weight: 600; margin-bottom: 12px; position: relative; z-index: 1; }
 .service-card p { color: var(--muted); font-size: .94rem; line-height: 1.78; font-weight: 300; position: relative; z-index: 1; }
  
 #process { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
-#process .section-head { margin-bottom: 64px; }
+#process .section-head { margin-bottom: 46px; }
+.process-line { position: relative; height: 2px; background: var(--border); border-radius: 2px; margin-bottom: 18px; overflow: hidden; }
+.process-line-fill { position: absolute; inset: 0 100% 0 0; background: linear-gradient(90deg, var(--accent), var(--accent-2)); border-radius: 2px; transition: right 1.4s var(--ease-out); }
+.process-line.filled .process-line-fill { right: 0%; }
 .process-steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; }
-.process-step { padding: 40px 32px 44px; border-right: 1px solid var(--border); position: relative; opacity: 0; transform: translateY(30px); transition: opacity .7s var(--ease-out), transform .7s var(--ease-out); }
+.process-step { padding: 40px 32px 44px; border-right: 1px solid var(--border); position: relative; opacity: 0; transform: translateY(30px) scale(.97); transition: opacity .7s var(--ease-out), transform .7s var(--ease-out); }
+.process-step:nth-child(even) { transform: translateY(30px) scale(.97) translateX(0); }
 .process-step:last-child { border-right: none; }
-.process-step.visible { opacity: 1; transform: translateY(0); }
-.step-num { font-family: var(--font-mono); font-size: .78rem; color: var(--muted-2); margin-bottom: 20px; letter-spacing: .5px; }
-.step-icon { width: 44px; height: 44px; border-radius: 12px; border: 1px solid var(--border-2); display: flex; align-items: center; justify-content: center; color: var(--accent); font-size: 1rem; margin-bottom: 22px; transition: background .4s, border-color .4s; }
-.process-step:hover .step-icon { background: var(--accent-soft); border-color: rgba(167,139,250,.3); }
+.process-step.visible { opacity: 1; transform: translateY(0) scale(1); }
+.step-num { font-family: var(--font-mono); font-size: .78rem; color: var(--muted-2); margin-bottom: 20px; letter-spacing: .5px; position: relative; }
+.step-num::after { content: ''; position: absolute; left: 26px; top: 50%; width: 0; height: 1px; background: var(--border-2); transition: width .6s var(--ease-out) .3s; }
+.process-step.visible .step-num::after { width: 18px; }
+.step-icon { width: 44px; height: 44px; border-radius: 12px; border: 1px solid var(--border-2); display: flex; align-items: center; justify-content: center; color: var(--accent); font-size: 1rem; margin-bottom: 22px; transition: background .4s, border-color .4s, transform .5s var(--ease-out); transform: rotate(-90deg) scale(.6); opacity: 0; }
+.process-step.visible .step-icon { transform: rotate(0) scale(1); opacity: 1; transition: background .4s, border-color .4s, transform .6s var(--ease-out) .15s, opacity .6s .15s; }
+.process-step:hover .step-icon { background: var(--accent-soft); border-color: rgba(167,139,250,.3); transform: rotate(0) scale(1.08); }
 .process-step h3 { font-family: var(--font-display); font-size: 1.2rem; font-weight: 600; margin-bottom: 10px; }
 .process-step p { color: var(--muted); font-size: .9rem; line-height: 1.75; font-weight: 300; }
 @media (max-width: 900px) { .process-steps { grid-template-columns: 1fr 1fr; } .process-step { border-right: none; border-bottom: 1px solid var(--border); } .process-step:nth-child(odd) { border-right: 1px solid var(--border); } .process-step:nth-last-child(-n+2) { border-bottom: none; } }
 @media (max-width: 540px) { .process-steps { grid-template-columns: 1fr; } .process-step { border-right: none !important; border-bottom: 1px solid var(--border); } .process-step:last-child { border-bottom: none; } }
  
-.showcase-wrap { margin: 100px 8% 80px; background: var(--surface); border: 1px solid var(--border); border-radius: 28px; padding: 80px 7%; display: flex; align-items: center; gap: 80px; overflow: hidden; }
+.showcase-wrap { margin: 200px 8% 80px; background: var(--surface); border: 1px solid var(--border); border-radius: 28px; padding: 80px 7%; display: flex; align-items: center; gap: 80px; overflow: hidden; }
 .showcase-left { flex: 1; }
 .showcase-left h2 { font-family: var(--font-display); font-size: clamp(2rem, 3.8vw, 3.2rem); font-weight: 700; letter-spacing: -1px; margin-bottom: 20px; line-height: 1.1; }
 .showcase-left p { color: var(--muted); max-width: 400px; line-height: 1.85; font-weight: 300; font-size: .97rem; }
@@ -270,16 +279,48 @@ header, main, footer, section { position: relative; z-index: 2; }
 .ui-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 16px 20px 20px; }
 .ui-card { height: 70px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface); position: relative; overflow: hidden; }
 .ui-card::after { content: ''; position: absolute; bottom: 10px; left: 12px; right: 12px; height: 6px; border-radius: 3px; background: rgba(255,255,255,.08); }
-@media (max-width: 900px) { .showcase-wrap { flex-direction: column; gap: 40px; padding: 50px 7%; margin: 0 4% 60px; } }
+@media (max-width: 900px) { .showcase-wrap { flex-direction: column; gap: 40px; padding: 50px 7%; margin: 200px 4% 60px; } }
  
-.portfolio-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
-.portfolio-card { background: var(--surface); border: 1px solid var(--border); border-radius: 22px; overflow: hidden; transition: transform .5s var(--ease-out), border-color .5s; }
-.portfolio-card:hover { transform: translateY(-10px); border-color: rgba(167,139,250,.25); }
+/* ── PORTFOLIO INTRO — one card blooms into a spinning 3D sphere of cards ── */
+.pf3d-wrap { position: relative; height: 340vh; }
+.pf3d-pin {
+  position: sticky; top: 0; height: 100vh; width: 100%;
+  overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  perspective: 1400px;
+}
+.pf3d-heading { text-align: center; margin-bottom: 6px; position: relative; z-index: 30; }
+.pf3d-heading .label { justify-content: center; }
+.pf3d-heading .label::before { display: none; }
+.pf3d-ofmany { display: inline-block; opacity: 0; transform: translateX(10px); }
+.pf3d-stage { position: relative; width: 100%; flex: 1; max-height: 560px; }
+.pf3d-hero-card {
+  position: absolute; left: 50%; top: 50%; width: min(360px, 70vw); aspect-ratio: 4/3;
+  border-radius: 20px; overflow: hidden; border: 1px solid var(--border-2);
+  box-shadow: 0 30px 80px rgba(0,0,0,.5); transform: translate(-50%,-50%) scale(1); opacity: 1; z-index: 50;
+}
+.pf3d-hero-card img { width: 100%; height: 100%; object-fit: cover; }
+.pf3d-hero-label { position: absolute; left: 16px; bottom: 14px; font-family: var(--font-mono); font-size: .72rem; background: rgba(0,0,0,.5); backdrop-filter: blur(6px); padding: 6px 12px; border-radius: 8px; letter-spacing: .3px; }
+.pf3d-sphere { position: absolute; left: 50%; top: 50%; width: 0; height: 0; transform-style: preserve-3d; z-index: 10; }
+.sphere-node { position: absolute; left: 0; top: 0; width: 116px; height: 148px; margin-left: -58px; margin-top: -74px; border-radius: 14px; overflow: hidden; border: 1px solid var(--border-2); background: var(--surface-2); opacity: 0; will-change: transform, opacity; box-shadow: 0 12px 30px rgba(0,0,0,.4); }
+.sphere-node img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.sphere-node.placeholder { display: flex; align-items: center; justify-content: center; color: var(--muted-2); font-size: 1.2rem; background: linear-gradient(150deg, rgba(167,139,250,.1), rgba(110,231,183,.05)); }
+.sphere-node .sn-label { position: absolute; left: 8px; bottom: 8px; font-family: var(--font-mono); font-size: .58rem; background: rgba(0,0,0,.5); padding: 3px 7px; border-radius: 6px; white-space: nowrap; letter-spacing: .3px; }
+.pf3d-wrap.pf3d-static { height: auto; }
+.pf3d-wrap.pf3d-static .pf3d-pin { position: relative; height: auto; padding: 90px 0 40px; }
+.pf3d-wrap.pf3d-static .pf3d-sphere { display: none; }
+@media (max-width: 640px) { .pf3d-stage { max-height: 420px; } }
+
+.portfolio-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; perspective: 1400px; }
+.portfolio-card { background: var(--surface); border: 1px solid var(--border); border-radius: 22px; overflow: hidden; transition: transform .5s var(--ease-out), border-color .5s; transform-style: preserve-3d; }
+.portfolio-card:hover { border-color: rgba(167,139,250,.25); }
 .portfolio-card:hover .portfolio-thumb img { transform: scale(1.08); }
 .portfolio-thumb { height: 220px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
 .portfolio-thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform .8s var(--ease-out); }
-.thumb-curtain { position: absolute; inset: 0; z-index: 3; background: var(--bg-2); transform-origin: left center; transition: transform 1s var(--ease-out); }
+.thumb-curtain { position: absolute; inset: 0; z-index: 3; background: var(--bg-2); transform-origin: left center; transition: transform .9s var(--ease-out); }
+.thumb-curtain.dir-right { transform-origin: right center; }
+.thumb-curtain.dir-top { transform-origin: top center; }
 .portfolio-card.visible .thumb-curtain { transform: scaleX(0); }
+.portfolio-card.visible .thumb-curtain.dir-top { transform: scaleY(0); }
 .thumb-label { position: absolute; top: 14px; left: 14px; font-family: var(--font-mono); font-size: .7rem; background: rgba(0,0,0,.4); backdrop-filter: blur(8px); border: 1px solid var(--border-2); padding: 5px 10px; border-radius: 8px; color: var(--text); letter-spacing: .5px; z-index: 2; }
 .portfolio-body { padding: 26px 26px 30px; }
 .portfolio-body .category { font-family: var(--font-mono); font-size: .72rem; color: var(--accent); letter-spacing: .5px; margin-bottom: 8px; text-transform: uppercase; }
@@ -287,14 +328,32 @@ header, main, footer, section { position: relative; z-index: 2; }
 .portfolio-body p { color: var(--muted); font-size: .9rem; font-weight: 300; line-height: 1.7; }
 @media (max-width: 860px) { .portfolio-grid { grid-template-columns: 1fr; } }
  
-#testimonials { padding: 120px 0; overflow: hidden; }
-#testimonials .section-head { padding: 0 8%; margin-bottom: 60px; }
-.testimonials-track { display: flex; gap: 20px; width: max-content; animation: slide 40s linear infinite; }
-.testimonials-track:hover { animation-play-state: paused; }
-.t-card { width: 360px; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 34px; flex-shrink: 0; }
-.t-stars { color: var(--accent); font-size: .95rem; letter-spacing: 3px; margin-bottom: 20px; }
-.t-text { color: #bbbcc8; line-height: 1.82; font-size: .95rem; font-weight: 300; }
-.t-author { margin-top: 22px; font-family: var(--font-mono); font-size: .74rem; color: var(--muted-2); text-transform: uppercase; letter-spacing: .5px; }
+/* ── TESTIMONIALS — pinned full-screen section that scrolls sideways ── */
+.t3d-wrap { position: relative; }
+.t3d-pin {
+  position: sticky; top: 0; height: 100vh; width: 100%;
+  overflow: hidden; display: flex; flex-direction: column; justify-content: center;
+  perspective: 1600px;
+}
+.t3d-pin .section-head { padding: 0 8%; margin-bottom: 54px; flex-shrink: 0; }
+.t3d-track { display: flex; align-items: center; gap: 34px; padding: 0 10vw; width: max-content; transform-style: preserve-3d; will-change: transform; }
+.t3d-card {
+  width: min(420px, 78vw); background: var(--surface); border: 1px solid var(--border); border-radius: 22px;
+  padding: 38px; flex-shrink: 0; transform-style: preserve-3d; will-change: transform, opacity;
+}
+.t3d-card .t-stars { color: var(--accent); font-size: .95rem; letter-spacing: 3px; margin-bottom: 20px; }
+.t3d-card .t-text { color: #bbbcc8; line-height: 1.82; font-size: .95rem; font-weight: 300; }
+.t3d-card .t-author { margin-top: 22px; font-family: var(--font-mono); font-size: .74rem; color: var(--muted-2); text-transform: uppercase; letter-spacing: .5px; }
+.t3d-progress { width: min(320px, 60vw); height: 2px; background: var(--border); border-radius: 2px; margin: 46px auto 0; overflow: hidden; flex-shrink: 0; }
+.t3d-progress-fill { display: block; height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), var(--accent-2)); border-radius: 2px; }
+.t3d-hint { text-align: center; margin-top: 14px; font-family: var(--font-mono); font-size: .72rem; color: var(--muted-2); letter-spacing: .5px; flex-shrink: 0; }
+
+/* Touch devices / reduced motion: fall back to a natural swipeable row instead of scroll-jacking */
+.t3d-wrap.t3d-static { height: auto !important; }
+.t3d-wrap.t3d-static .t3d-pin { position: relative; top: auto; height: auto; padding: 0 0 80px; overflow: visible; }
+.t3d-wrap.t3d-static .t3d-track { overflow-x: auto; scroll-snap-type: x proximity; -webkit-overflow-scrolling: touch; padding: 4px 8% 20px; transform: none !important; }
+.t3d-wrap.t3d-static .t3d-card { scroll-snap-align: center; transform: none !important; opacity: 1 !important; }
+.t3d-wrap.t3d-static .t3d-progress, .t3d-wrap.t3d-static .t3d-hint { display: none; }
  
 #contact { text-align: center; padding: 80px 8% 140px; }
 #contact .label { justify-content: center; }
@@ -303,7 +362,9 @@ header, main, footer, section { position: relative; z-index: 2; }
 #contact .grad-inline { background: linear-gradient(110deg, var(--accent), var(--accent-2)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
 #contact p { color: var(--muted); max-width: 440px; margin: 0 auto 52px; font-size: 1rem; font-weight: 300; line-height: 1.7; }
 .contact-grid { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; }
-.contact-pill { display: inline-flex; align-items: center; gap: 12px; padding: 18px 30px; background: var(--surface); border: 1px solid var(--border-2); border-radius: 16px; font-weight: 500; font-size: .95rem; transition: background .4s var(--ease-out), border-color .4s var(--ease-out), box-shadow .4s var(--ease-out), transform .4s var(--ease-out); will-change: transform; }
+.contact-pill { display: inline-flex; align-items: center; gap: 12px; padding: 18px 30px; background: var(--surface); border: 1px solid var(--border-2); border-radius: 16px; font-weight: 500; font-size: .95rem; transition: background .4s var(--ease-out), border-color .4s var(--ease-out), box-shadow .4s var(--ease-out), transform .4s var(--ease-out); will-change: transform; position: relative; overflow: hidden; }
+.pill-ripple { position: absolute; border-radius: 50%; background: rgba(167,139,250,.35); transform: scale(0); animation: rippleOut .7s var(--ease-out) forwards; pointer-events: none; }
+@keyframes rippleOut { to { transform: scale(1); opacity: 0; } }
 .contact-pill .icon { width: 36px; height: 36px; border-radius: 10px; background: var(--accent-soft); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: .9rem; }
 .contact-pill:hover { background: var(--surface-2); border-color: var(--accent); box-shadow: 0 14px 36px rgba(167,139,250,.15); }
  
@@ -566,6 +627,7 @@ footer { padding: 40px 8%; border-top: 1px solid var(--border); display: flex; j
       <h2 class="section-h2 reveal from-left kinetic">Four stages.<br>Zero guesswork.</h2>
     </div>
   </div>
+  <div class="process-line" id="processLine"><span class="process-line-fill"></span></div>
   <div class="process-steps" id="processSteps">
     <div class="process-step">
       <div class="step-num">01</div>
@@ -623,18 +685,37 @@ footer { padding: 40px 8%; border-top: 1px solid var(--border); display: flex; j
   </div>
 </div>
  
-<section class="section" id="work">
+<section id="work">
+
+  <div class="pf3d-wrap" id="pf3dWrap">
+    <div class="pf3d-pin" id="pf3dPin">
+      <div class="pf3d-heading">
+        <div class="label">Selected work</div>
+        <h2 class="section-h2"><span id="pf3dOne">One</span><span class="pf3d-ofmany" id="pf3dOfMany"> of many.</span></h2>
+      </div>
+      <div class="pf3d-stage" id="pf3dStage">
+        <div class="pf3d-hero-card" id="pf3dHeroCard">
+          <img src="pizzax.PNG" alt="PizzaX Website">
+          <div class="pf3d-hero-label">PizzaX — Restaurant</div>
+        </div>
+        <div class="pf3d-sphere" id="pf3dSphere"></div>
+      </div>
+      <div class="t3d-progress"><span class="t3d-progress-fill" id="pf3dProgFill"></span></div>
+    </div>
+  </div>
+
+  <div class="section" style="padding-top:70px;">
   <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:60px;gap:30px;flex-wrap:wrap;">
     <div>
-      <div class="label reveal from-left">Selected work</div>
-      <h2 class="section-h2 reveal from-left kinetic">A few favorites.</h2>
+      <div class="label reveal from-left">Full case studies</div>
+      <h2 class="section-h2 reveal from-left kinetic">Every piece, in detail.</h2>
     </div>
     <p class="reveal from-right" style="color:var(--muted);max-width:300px;font-weight:300;font-size:.95rem;line-height:1.7;">Projects crafted to elevate brands and create memorable digital experiences.</p>
   </div>
   <div class="portfolio-grid">
     <div class="portfolio-card reveal delay-1">
       <div class="portfolio-thumb">
-    <div class="thumb-curtain"></div>
+    <div class="thumb-curtain dir-top"></div>
     <img src="pizzax.PNG" alt="PizzaX Website">
     <span class="thumb-label">Restaurant</span>
 </div>
@@ -646,7 +727,7 @@ footer { padding: 40px 8%; border-top: 1px solid var(--border); display: flex; j
     </div>
     <div class="portfolio-card reveal delay-2">
       <div class="portfolio-thumb">
-    <div class="thumb-curtain"></div>
+    <div class="thumb-curtain dir-right"></div>
     <img src="pulsefit.PNG" alt="Pulse fit Website">
     <span class="thumb-label">Fitness</span>
 </div>
@@ -669,20 +750,29 @@ footer { padding: 40px 8%; border-top: 1px solid var(--border); display: flex; j
       </div>
     </div>
   </div>
+  </div>
 </section>
  
 <section id="testimonials">
-  <div class="section-head">
-    <div class="label reveal from-left">Client feedback</div>
-    <h2 class="section-h2 reveal from-left kinetic">What partners say.</h2>
-  </div>
-  <div class="testimonials-track">
-    <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-text">"Vanta transformed our online presence completely — bookings doubled within a month of launch."</p><div class="t-author">Restaurant Owner</div></div>
-    <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-text">"The site looked far more premium than we expected for the budget we had."</p><div class="t-author">Fitness Brand</div></div>
-    <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-text">"Fast delivery and incredible attention to detail from kickoff to launch."</p><div class="t-author">Real Estate Agency</div></div>
-    <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-text">"The design instantly increased trust with our customers — it just feels solid."</p><div class="t-author">Local Business</div></div>
-    <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-text">"Vanta transformed our online presence completely — bookings doubled within a month of launch."</p><div class="t-author">Restaurant Owner</div></div>
-    <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-text">"The site looked far more premium than we expected for the budget we had."</p><div class="t-author">Fitness Brand</div></div>
+  <div class="t3d-wrap" id="t3dWrap">
+    <div class="t3d-pin" id="t3dPin">
+      <div class="section-head">
+        <div class="label reveal from-left">Client feedback</div>
+        <h2 class="section-h2 reveal from-left kinetic">What partners say.</h2>
+      </div>
+      <div class="t3d-track" id="t3dTrack">
+        <div class="t3d-card"><div class="t-stars">★★★★★</div><p class="t-text">"Vanta transformed our online presence completely — bookings doubled within a month of launch."</p><div class="t-author">Restaurant Owner</div></div>
+        <div class="t3d-card"><div class="t-stars">★★★★★</div><p class="t-text">"The site looked far more premium than we expected for the budget we had."</p><div class="t-author">Fitness Brand</div></div>
+        <div class="t3d-card"><div class="t-stars">★★★★★</div><p class="t-text">"Fast delivery and incredible attention to detail from kickoff to launch."</p><div class="t-author">Real Estate Agency</div></div>
+        <div class="t3d-card"><div class="t-stars">★★★★★</div><p class="t-text">"The design instantly increased trust with our customers — it just feels solid."</p><div class="t-author">Local Business</div></div>
+        <div class="t3d-card"><div class="t-stars">★★★★★</div><p class="t-text">"Communication was clear the whole way through — no chasing for updates."</p><div class="t-author">Clinic Owner</div></div>
+        <div class="t3d-card"><div class="t-stars">★★★★★</div><p class="t-text">"Every animation feels intentional. Nothing on the site feels like filler."</p><div class="t-author">Agency Partner</div></div>
+        <div class="t3d-card"><div class="t-stars">★★★★★</div><p class="t-text">"They understood our brand faster than agencies twice their size."</p><div class="t-author">Pet Care Brand</div></div>
+        <div class="t3d-card"><div class="t-stars">★★★★★</div><p class="t-text">"Genuinely felt like a partner, not a freelancer we'd hired for a week."</p><div class="t-author">Boutique Retailer</div></div>
+      </div>
+      <div class="t3d-progress"><span class="t3d-progress-fill" id="t3dProgFill"></span></div>
+      <div class="t3d-hint">Keep scrolling ↓</div>
+    </div>
   </div>
 </section>
  
@@ -720,10 +810,17 @@ footer { padding: 40px 8%; border-top: 1px solid var(--border); display: flex; j
  
   var nav = document.getElementById('nav');
   var prog = document.getElementById('progress');
+  var heroInner = document.querySelector('.hero-inner');
   function onScroll(){
     nav.classList.toggle('scrolled', window.scrollY > 40);
     var h = document.documentElement.scrollHeight - window.innerHeight;
     prog.style.width = h > 0 ? (window.scrollY / h * 100) + '%' : '0%';
+    if(heroInner && !reduced){
+      var vh = window.innerHeight;
+      var p = Math.min(window.scrollY / (vh*0.9), 1);
+      heroInner.style.opacity = 1 - p*0.9;
+      heroInner.style.transform = 'translateY(' + (p*50) + 'px)';
+    }
   }
   window.addEventListener('scroll', onScroll, {passive:true});
   onScroll();
@@ -751,8 +848,10 @@ footer { padding: 40px 8%; border-top: 1px solid var(--border); display: flex; j
   var pio = new IntersectionObserver(function(entries){
     entries.forEach(function(e){
       if(e.isIntersecting){
+        var pline = document.getElementById('processLine');
+        if(pline) pline.classList.add('filled');
         steps.forEach(function(s,i){
-          setTimeout(function(){ s.classList.add('visible'); }, i * 110);
+          setTimeout(function(){ s.classList.add('visible'); }, 250 + i * 140);
         });
         pio.disconnect();
       }
@@ -931,17 +1030,95 @@ footer { padding: 40px 8%; border-top: 1px solid var(--border); display: flex; j
     }
   })();
  
-  function tilt(el){
+  function tilt(el, strength, lift){
     if(!el || reduced) return;
+    strength = strength || 7;
     el.addEventListener('mousemove', function(e){
       var r = el.getBoundingClientRect();
       var px = (e.clientX - r.left) / r.width - .5;
       var py = (e.clientY - r.top) / r.height - .5;
-      el.style.transform = 'rotateY('+(px*7)+'deg) rotateX('+(py*-7)+'deg)';
+      el.style.transform = 'rotateY('+(px*strength)+'deg) rotateX('+(py*-strength)+'deg)' + (lift ? ' translateY(-10px)' : '');
     });
     el.addEventListener('mouseleave', function(){ el.style.transform = ''; });
   }
   tilt(document.getElementById('uiMockup'));
+  document.querySelectorAll('.portfolio-card').forEach(function(card){ tilt(card, 5, true); });
+
+  /* SPOTLIGHT — service cards track the cursor with a soft glow */
+  document.querySelectorAll('.service-card').forEach(function(card){
+    card.addEventListener('mousemove', function(e){
+      var r = card.getBoundingClientRect();
+      card.style.setProperty('--mx', ((e.clientX-r.left)/r.width*100)+'%');
+      card.style.setProperty('--my', ((e.clientY-r.top)/r.height*100)+'%');
+    });
+  });
+
+  /* COUNT-UP — animate numeric stats once they enter view */
+  function animateCount(el){
+    var raw = el.textContent.trim();
+    var match = raw.match(/^([^\d]*)(\d+(?:\.\d+)?)(.*)$/);
+    if(!match){ return; }
+    var prefix = match[1], target = parseFloat(match[2]), suffix = match[3];
+    var isFloat = match[2].indexOf('.') !== -1;
+    if(reduced){ return; }
+    var dur = 1200, start = null;
+    function step(ts){
+      if(!start) start = ts;
+      var p = Math.min((ts-start)/dur, 1);
+      var eased = 1 - Math.pow(1-p, 3);
+      var val = target*eased;
+      el.textContent = prefix + (isFloat ? val.toFixed(1) : Math.round(val)) + suffix;
+      if(p < 1) requestAnimationFrame(step);
+      else el.textContent = raw;
+    }
+    requestAnimationFrame(step);
+  }
+  var countEls = document.querySelectorAll('.stat b, .strip-item .big');
+  var cio = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){ animateCount(e.target); cio.unobserve(e.target); }
+    });
+  }, {threshold:.6});
+  countEls.forEach(function(el){ cio.observe(el); });
+
+  /* TEXT SCRAMBLE — nav links resolve from random glyphs on hover */
+  var scrambleChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ#$%&*';
+  function scramble(el){
+    if(reduced || el.dataset.scrambling) return;
+    var original = el.textContent;
+    var len = original.length;
+    el.dataset.scrambling = '1';
+    var frame = 0, maxFrames = 10;
+    var iv = setInterval(function(){
+      var out = '';
+      for(var i=0;i<len;i++){
+        if(i < (frame/maxFrames)*len){ out += original[i]; }
+        else if(original[i] === ' '){ out += ' '; }
+        else { out += scrambleChars[Math.floor(Math.random()*scrambleChars.length)]; }
+      }
+      el.textContent = out;
+      frame++;
+      if(frame > maxFrames){ el.textContent = original; clearInterval(iv); delete el.dataset.scrambling; }
+    }, 28);
+  }
+  document.querySelectorAll('.nav-links a:not(.nav-cta)').forEach(function(a){
+    a.addEventListener('mouseenter', function(){ scramble(a); });
+  });
+
+  /* RIPPLE — contact pills pulse outward from the click point */
+  document.querySelectorAll('.contact-pill').forEach(function(pill){
+    pill.addEventListener('click', function(e){
+      var r = pill.getBoundingClientRect();
+      var size = Math.max(r.width, r.height) * 1.6;
+      var span = document.createElement('span');
+      span.className = 'pill-ripple';
+      span.style.width = span.style.height = size+'px';
+      span.style.left = (e.clientX - r.left - size/2)+'px';
+      span.style.top = (e.clientY - r.top - size/2)+'px';
+      pill.appendChild(span);
+      setTimeout(function(){ span.remove(); }, 700);
+    });
+  });
  
   document.querySelectorAll('[data-magnet]').forEach(function(el){
     if(reduced) return;
@@ -985,6 +1162,171 @@ footer { padding: 40px 8%; border-top: 1px solid var(--border); display: flex; j
       ambient.style.transform = '';
     });
   }
+
+  /* TESTIMONIALS 3D SCROLL-JACK — pins the section full-screen and converts
+     vertical scroll into horizontal motion through a coverflow of cards,
+     then releases back to normal vertical scrolling once the cards end. */
+  (function(){
+    var wrap = document.getElementById('t3dWrap');
+    var track = document.getElementById('t3dTrack');
+    var progFill = document.getElementById('t3dProgFill');
+    if(!wrap || !track) return;
+
+    var isTouch = window.matchMedia('(hover: none), (pointer: coarse)').matches;
+    if(isTouch || reduced){
+      wrap.classList.add('t3d-static');
+      return;
+    }
+
+    var cards = Array.prototype.slice.call(track.querySelectorAll('.t3d-card'));
+    var cardData = [];
+    var extra = 0;
+
+    function measure(){
+      track.style.transform = 'translateX(0px)';
+      var trackWidth = track.scrollWidth;
+      extra = Math.max(trackWidth - window.innerWidth, 0);
+      wrap.style.height = (window.innerHeight + extra) + 'px';
+      cardData = cards.map(function(c){
+        return { el: c, left: c.offsetLeft, width: c.offsetWidth };
+      });
+      update();
+    }
+
+    var ticking = false;
+    function update(){
+      ticking = false;
+      var rect = wrap.getBoundingClientRect();
+      var scrolled = -rect.top;
+      var progress = extra > 0 ? Math.min(Math.max(scrolled / extra, 0), 1) : 0;
+      var tx = -progress * extra;
+      track.style.transform = 'translateX(' + tx + 'px)';
+      if(progFill) progFill.style.width = (progress * 100) + '%';
+
+      var vw = window.innerWidth;
+      var center = vw / 2;
+      cardData.forEach(function(d){
+        var cardCenter = d.left + d.width / 2 + tx;
+        var delta = cardCenter - center;
+        var norm = Math.max(-1, Math.min(1, delta / (vw * 0.55)));
+        var scale = 1 - Math.abs(norm) * 0.18;
+        var rotY = norm * -22;
+        var tz = -Math.abs(norm) * 140;
+        var op = Math.max(1 - Math.abs(norm) * 0.6, 0.22);
+        d.el.style.transform = 'rotateY(' + rotY + 'deg) translateZ(' + tz + 'px) scale(' + scale + ')';
+        d.el.style.opacity = op;
+      });
+    }
+    function onScroll(){
+      if(!ticking){ requestAnimationFrame(update); ticking = true; }
+    }
+    window.addEventListener('scroll', onScroll, {passive:true});
+    window.addEventListener('resize', measure);
+    measure();
+  })();
+
+  /* PORTFOLIO SPHERE — a single featured card blooms into a spinning 3D
+     sphere of cards, rotates to its exact antipode, then expands and
+     vanishes to reveal the full case-study grid. */
+  (function(){
+    var wrap = document.getElementById('pf3dWrap');
+    var heroCard = document.getElementById('pf3dHeroCard');
+    var sphere = document.getElementById('pf3dSphere');
+    var ofMany = document.getElementById('pf3dOfMany');
+    var progFill = document.getElementById('pf3dProgFill');
+    if(!wrap || !sphere || !heroCard) return;
+
+    function map(v,a,b,c,d){ return c + (v-a)/(b-a)*(d-c); }
+    function clamp01(v){ return Math.max(0, Math.min(1, v)); }
+
+    var isTouch = window.matchMedia('(hover: none), (pointer: coarse)').matches;
+    if(isTouch || reduced){
+      wrap.classList.add('pf3d-static');
+      heroCard.style.opacity = 1;
+      if(ofMany){ ofMany.style.opacity = 1; ofMany.style.transform = 'none'; }
+      return;
+    }
+
+    var R = 210;
+    var realCards = [
+      { src:'pizzax.PNG', label:'PizzaX — Restaurant' },
+      { src:'pulsefit.PNG', label:'PulseFit — Fitness' },
+      { src:'pets paw.PNG', label:'PetPaws — Veterinary' }
+    ];
+    var nodesData = [];
+    nodesData.push({ x:0, y:0, z:R, real: realCards[0] });   // front: same card as the hero
+    nodesData.push({ x:0, y:0, z:-R, real: realCards[1] });  // exact antipode
+    nodesData.push({ x:R, y:0, z:0, real: realCards[2] });   // third real project, on the equator
+
+    var placeholderCount = 15;
+    var offset = 2 / placeholderCount;
+    var increment = Math.PI * (3 - Math.sqrt(5));
+    for(var i=0;i<placeholderCount;i++){
+      var yv = ((i*offset) - 1) + (offset/2);
+      var rad = Math.sqrt(Math.max(0, 1 - yv*yv));
+      var phi = i * increment;
+      var xv = Math.cos(phi) * rad;
+      var zv = Math.sin(phi) * rad;
+      if(Math.abs(zv) > 0.9 || (Math.abs(xv) > 0.9 && Math.abs(yv) < 0.1)) continue;
+      nodesData.push({ x: xv*R, y: yv*R, z: zv*R, real: null });
+    }
+
+    var nodeEls = nodesData.map(function(d){
+      var el = document.createElement('div');
+      el.className = 'sphere-node' + (d.real ? '' : ' placeholder');
+      el.innerHTML = d.real
+        ? '<img src="'+d.real.src+'" alt=""><span class="sn-label">'+d.real.label+'</span>'
+        : '<i class="fa-solid fa-image"></i>';
+      sphere.appendChild(el);
+      return { el: el, x: d.x, y: d.y, z: d.z };
+    });
+
+    var scrollRange = 0;
+    function measure(){
+      scrollRange = wrap.offsetHeight - window.innerHeight;
+    }
+    measure();
+    window.addEventListener('resize', measure);
+
+    var ticking = false;
+    function render(){
+      ticking = false;
+      var rect = wrap.getBoundingClientRect();
+      var scrolled = -rect.top;
+      var p = scrollRange > 0 ? clamp01(scrolled / scrollRange) : 0;
+      if(progFill) progFill.style.width = (p*100) + '%';
+
+      var heroP = clamp01(map(p, 0, 0.14, 1, 0));
+      heroCard.style.opacity = heroP;
+      heroCard.style.transform = 'translate(-50%,-50%) scale(' + (0.4 + heroP*0.6) + ')';
+      heroCard.style.pointerEvents = heroP > 0.5 ? 'auto' : 'none';
+
+      var sphereInP = clamp01(map(p, 0.10, 0.30, 0, 1));
+      var ofManyP = clamp01(map(p, 0.12, 0.24, 0, 1));
+      if(ofMany){ ofMany.style.opacity = ofManyP; ofMany.style.transform = 'translateX(' + (10 - 10*ofManyP) + 'px)'; }
+
+      var theta = clamp01(map(p, 0.30, 0.78, 0, 1)) * Math.PI;
+      var expandP = clamp01(map(p, 0.80, 1.0, 0, 1));
+      var expandScale = 1 + expandP*4.5;
+      var expandFade = 1 - expandP;
+
+      var cosT = Math.cos(theta), sinT = Math.sin(theta);
+      nodeEls.forEach(function(n){
+        var rx = n.x*cosT + n.z*sinT;
+        var rz = -n.x*sinT + n.z*cosT;
+        var depth = (rz + R) / (2*R);
+        var scale = (0.55 + depth*0.65) * sphereInP * expandScale;
+        n.el.style.transform = 'translate3d(' + rx + 'px,' + n.y + 'px,' + rz + 'px) scale(' + scale + ')';
+        n.el.style.opacity = Math.max(0.15, depth) * sphereInP * expandFade;
+        n.el.style.zIndex = Math.round(rz + 1000);
+      });
+    }
+    function onScroll(){
+      if(!ticking){ requestAnimationFrame(render); ticking = true; }
+    }
+    window.addEventListener('scroll', onScroll, {passive:true});
+    render();
+  })();
 })();
 </script>
 </body>
