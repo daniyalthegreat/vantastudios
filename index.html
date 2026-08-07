@@ -9,8 +9,12 @@
 <meta name="google-site-verification" content="MAMoRCTEvNDQo-Z6YhyLWLZmIF5IYWa9KGIOzX1o_sE" />
  
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/fontawesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/solid.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/brands.min.css">
  
 <style>
 :root {
@@ -55,7 +59,7 @@ img, svg { display: block; max-width: 100%; }
 ::selection { background: var(--accent); color: #fff; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
  
-.ambient { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.ambient { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; will-change: transform; transition: transform .6s var(--ease-out); }
 .orb { position: absolute; border-radius: 50%; filter: blur(100px); will-change: transform; }
 .orb-1 { width: 50vw; height: 50vw; top: -15vw; left: -10vw; background: radial-gradient(circle, rgba(167,139,250,.22), transparent 65%); animation: float1 28s ease-in-out infinite; }
 .orb-2 { width: 40vw; height: 40vw; bottom: -12vw; right: -8vw; background: radial-gradient(circle, rgba(110,231,183,.14), transparent 65%); animation: float2 34s ease-in-out infinite; }
@@ -125,6 +129,17 @@ img, svg { display: block; max-width: 100%; }
  
 #progress { position: fixed; top: 0; left: 0; height: 2px; width: 0%; background: linear-gradient(90deg, var(--accent), var(--accent-2)); z-index: 99999; transition: width .1s linear; }
  
+.preloader { position: fixed; inset: 0; z-index: 100000; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 26px; transition: opacity .7s var(--ease-out), visibility .7s; }
+.preloader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+.preloader-mark { width: 56px; height: 56px; border-radius: 16px; background: var(--accent-soft); border: 1px solid rgba(167,139,250,.25); display: flex; align-items: center; justify-content: center; }
+.preloader-mark svg { width: 26px; height: 26px; overflow: visible; }
+.preloader-mark svg path { stroke-dasharray: 46; stroke-dashoffset: 46; animation: drawMark 1.15s var(--ease-out) forwards; }
+@keyframes drawMark { to { stroke-dashoffset: 0; } }
+.preloader-word { font-family: var(--font-mono); font-size: .72rem; letter-spacing: 3px; color: var(--muted-2); text-transform: uppercase; }
+.preloader-bar { position: relative; width: 140px; height: 2px; background: var(--border); border-radius: 2px; overflow: hidden; }
+.preloader-bar-fill { display: block; height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), var(--accent-2)); border-radius: 2px; }
+@media (prefers-reduced-motion:reduce) { .preloader { display: none; } }
+ 
 header, main, footer, section { position: relative; z-index: 2; }
  
 .nav {
@@ -137,9 +152,12 @@ header, main, footer, section { position: relative; z-index: 2; }
 .nav-logo { font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; letter-spacing: -.3px; display: flex; align-items: center; gap: 10px; }
 .nav-logo-mark { width: 28px; height: 28px; border-radius: 8px; background: var(--accent-soft); border: 1px solid rgba(167,139,250,.25); display: flex; align-items: center; justify-content: center; }
 .nav-logo-mark svg { width: 14px; height: 14px; }
-.nav-links { display: flex; align-items: center; gap: 6px; list-style: none; }
-.nav-links a { font-size: .88rem; font-weight: 400; color: #ffffff; padding: 8px 14px; border-radius: 10px; transition: color .25s, background .25s; }
+.nav-links { position: relative; display: flex; align-items: center; gap: 6px; list-style: none; }
+.nav-pill { position: absolute; top: 4px; bottom: 4px; left: 0; width: 0; border-radius: 10px; background: rgba(167,139,250,.10); border: 1px solid rgba(167,139,250,.22); opacity: 0; transition: transform .5s var(--ease-out), width .5s var(--ease-out), opacity .3s; pointer-events: none; z-index: 0; }
+.nav-links a { position: relative; z-index: 1; font-size: .86rem; font-weight: 400; color: #ffffff; padding: 8px 12px; border-radius: 10px; transition: color .25s, background .25s; }
 .nav-links a:hover { color: var(--text); background: rgba(255,255,255,.05); }
+.nav-links a:not(.nav-cta)::after { content: ''; position: absolute; left: 12px; right: 12px; bottom: 4px; height: 1px; background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform .35s var(--ease-out); }
+.nav-links a:not(.nav-cta):hover::after { transform: scaleX(1); }
 .nav-cta { font-size: .88rem; font-weight: 500; padding: 11px 22px; border-radius: 12px; background: var(--accent); color: #0b0b0f; transition: opacity .3s, box-shadow .3s; will-change: transform; }
 .nav-cta:hover { opacity: .9; box-shadow: 0 12px 28px var(--accent-glow); }
 .hamburger { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 8px; border-radius: 10px; }
@@ -151,13 +169,14 @@ header, main, footer, section { position: relative; z-index: 2; }
  
 .mobile-menu {
   position: fixed; inset: 0; background: rgba(7,7,10,.97); backdrop-filter: blur(24px); z-index: 9000;
-  display: flex; flex-direction: column; justify-content: center; align-items: flex-start; padding: 0 10%; gap: 4px;
+  display: flex; flex-direction: column; justify-content: center; align-items: flex-start; padding: 90px 10% 40px; gap: 2px;
+  overflow-y: auto; overscroll-behavior: contain;
   transform: translateY(-100%); transition: transform .65s var(--ease-out);
 }
 .mobile-menu.open { transform: translateY(0); }
-.mobile-menu a { font-family: var(--font-display); font-size: clamp(2.4rem,6vw,4.8rem); font-weight: 700; color: var(--text); padding: 18px 0; border-bottom: 1px solid var(--border); width: 100%; transition: color .3s, padding-left .3s; }
+.mobile-menu a { font-family: var(--font-display); font-size: clamp(2rem,6vw,4rem); font-weight: 700; color: var(--text); padding: 14px 0; border-bottom: 1px solid var(--border); width: 100%; flex-shrink: 0; transition: color .3s, padding-left .3s; }
 .mobile-menu a:hover { color: var(--accent); padding-left: 14px; }
-.close-x { position: absolute; top: 32px; right: 6%; width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--border-2); background: none; color: var(--text); cursor: pointer; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; transition: border-color .3s, background .3s; }
+.close-x { position: absolute; top: 32px; right: 6%; width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--border-2); background: none; color: var(--text); cursor: pointer; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; transition: border-color .3s, background .3s; z-index: 1; }
 .close-x:hover { background: var(--surface); border-color: var(--accent); }
  
 .hero { min-height: 100vh; display: flex; align-items: center; padding: 160px 8% 100px; }
@@ -170,15 +189,34 @@ header, main, footer, section { position: relative; z-index: 2; }
 .hero-h1 .line { display: block; overflow: hidden; padding-bottom: .1em; margin-bottom: -.1em; }
 .hero-h1 .k-mask { display: inline-block; overflow: hidden; vertical-align: top; }
 .hero-h1 .k-word { display: inline-block; transform: translateY(115%); opacity: 0; animation: wordIn .95s var(--ease-out) forwards; }
-.hero-h1 .grad { background: linear-gradient(110deg, var(--accent) 30%, var(--accent-2)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.hero-h1 .grad { background: linear-gradient(110deg, var(--accent) 20%, var(--accent-2) 40%, var(--accent-warm) 60%, var(--accent) 80%); background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.hero-h1 .k-word.grad {
+  animation-name: wordIn, gradShift;
+  animation-duration: .95s, 7s;
+  animation-timing-function: var(--ease-out), ease-in-out;
+  animation-iteration-count: 1, infinite;
+  animation-fill-mode: forwards, none;
+}
+@keyframes gradShift { 0%{background-position:0% 50%;} 50%{background-position:100% 50%;} 100%{background-position:0% 50%;} }
 @keyframes wordIn { from{transform:translateY(115%); opacity:0;} to{transform:translateY(0); opacity:1;} }
+ 
+/* Reusable diagonal light-sheen sweep, triggered on hover via .sheen-active */
+.sheen { position: relative; overflow: hidden; }
+.sheen::before {
+  content: ''; position: absolute; top: 0; left: -60%; width: 40%; height: 100%;
+  background: linear-gradient(115deg, transparent, rgba(255,255,255,.22), transparent);
+  transform: skewX(-18deg); transition: left .75s var(--ease-out); pointer-events: none; z-index: 2;
+}
+.sheen:hover::before { left: 130%; }
  
 .hero-sub { max-width: 460px; margin-top: 28px; color: var(--muted); font-size: 1.06rem; font-weight: 300; line-height: 1.75; opacity: 0; animation: riseIn 1s .78s var(--ease-out) forwards; }
 .hero-btns { display: flex; gap: 14px; margin-top: 44px; flex-wrap: wrap; opacity: 0; animation: riseIn 1s .92s var(--ease-out) forwards; }
-.btn-primary { padding: 16px 30px; border-radius: 14px; background: var(--accent); color: #0b0b0f; font-weight: 600; font-size: .96rem; display: inline-flex; align-items: center; gap: 10px; transition: transform .35s var(--ease-out), box-shadow .35s; will-change: transform; }
-.btn-primary:hover { box-shadow: 0 20px 40px var(--accent-glow); }
-.btn-ghost { padding: 16px 30px; border-radius: 14px; border: 1px solid var(--border-2); color: var(--text); font-weight: 500; font-size: .96rem; display: inline-flex; align-items: center; gap: 10px; transition: background .35s, border-color .35s, color .35s, transform .35s var(--ease-out); will-change: transform; }
-.btn-ghost:hover { background: rgba(255,255,255,.05); border-color: var(--accent); color: var(--accent); }
+.btn-primary { padding: 16px 30px; border-radius: 14px; background: var(--accent); color: #0b0b0f; font-weight: 600; font-size: .96rem; display: inline-flex; align-items: center; gap: 10px; transition: transform .45s cubic-bezier(.34,1.56,.64,1), box-shadow .35s; will-change: transform; }
+.btn-primary:hover { box-shadow: 0 20px 44px var(--accent-glow); transform: translateY(-3px) scale(1.03); }
+.btn-primary i { transition: transform .4s var(--ease-out); }
+.btn-primary:hover i { transform: translateX(4px); }
+.btn-ghost { padding: 16px 30px; border-radius: 14px; border: 1px solid var(--border-2); color: var(--text); font-weight: 500; font-size: .96rem; display: inline-flex; align-items: center; gap: 10px; transition: background .35s, border-color .35s, color .35s, transform .45s cubic-bezier(.34,1.56,.64,1); will-change: transform; }
+.btn-ghost:hover { background: rgba(255,255,255,.05); border-color: var(--accent); color: var(--accent); transform: translateY(-3px); }
  
 .hero-stats { display: flex; gap: 44px; margin-top: 60px; opacity: 0; animation: riseIn 1s 1.06s var(--ease-out) forwards; }
 .stat b { display: block; font-family: var(--font-display); font-size: 2rem; font-weight: 700; color: var(--text); }
@@ -309,13 +347,15 @@ header, main, footer, section { position: relative; z-index: 2; }
 .pf3d-wrap.pf3d-static .pf3d-pin { position: relative; height: auto; padding: 90px 0 40px; }
 .pf3d-wrap.pf3d-static .pf3d-sphere { display: none; }
 @media (max-width: 640px) { .pf3d-stage { max-height: 420px; } }
-
+ 
 .portfolio-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; perspective: 1400px; }
-.portfolio-card { background: var(--surface); border: 1px solid var(--border); border-radius: 22px; overflow: hidden; transition: transform .5s var(--ease-out), border-color .5s; transform-style: preserve-3d; }
-.portfolio-card:hover { border-color: rgba(167,139,250,.25); }
+.portfolio-card { background: var(--surface); border: 1px solid var(--border); border-radius: 22px; overflow: hidden; transition: transform .5s var(--ease-out), border-color .5s, box-shadow .5s var(--ease-out); transform-style: preserve-3d; }
+.portfolio-card:hover { border-color: rgba(167,139,250,.3); box-shadow: 0 30px 60px rgba(0,0,0,.45), 0 0 0 1px rgba(167,139,250,.08); }
 .portfolio-card:hover .portfolio-thumb img { transform: scale(1.08); }
 .portfolio-thumb { height: 220px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
 .portfolio-thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform .8s var(--ease-out); }
+.portfolio-thumb::after { content: ''; position: absolute; top: 0; left: -75%; width: 50%; height: 100%; background: linear-gradient(115deg, transparent, rgba(255,255,255,.16), transparent); transform: skewX(-18deg); transition: left .85s var(--ease-out); pointer-events: none; z-index: 2; }
+.portfolio-card:hover .portfolio-thumb::after { left: 130%; }
 .thumb-curtain { position: absolute; inset: 0; z-index: 3; background: var(--bg-2); transform-origin: left center; transition: transform .9s var(--ease-out); }
 .thumb-curtain.dir-right { transform-origin: right center; }
 .thumb-curtain.dir-top { transform-origin: top center; }
@@ -325,7 +365,9 @@ header, main, footer, section { position: relative; z-index: 2; }
 .portfolio-body { padding: 26px 26px 30px; }
 .portfolio-body .category { font-family: var(--font-mono); font-size: .72rem; color: var(--accent); letter-spacing: .5px; margin-bottom: 8px; text-transform: uppercase; }
 .portfolio-body h3 { font-family: var(--font-display); font-size: 1.15rem; font-weight: 600; margin-bottom: 8px; }
-.portfolio-body p { color: var(--muted); font-size: .9rem; font-weight: 300; line-height: 1.7; }
+.portfolio-body p { color: var(--muted); font-size: .9rem; font-weight: 300; line-height: 1.7; margin-bottom: 16px; }
+.portfolio-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+.portfolio-tags span { font-family: var(--font-mono); font-size: .68rem; letter-spacing: .3px; padding: 5px 10px; border-radius: 7px; background: var(--surface-2); border: 1px solid var(--border-2); color: var(--muted); }
 @media (max-width: 860px) { .portfolio-grid { grid-template-columns: 1fr; } }
  
 /* ── TESTIMONIALS — pinned full-screen section that scrolls sideways ── */
@@ -340,20 +382,26 @@ header, main, footer, section { position: relative; z-index: 2; }
 .t3d-card {
   width: min(420px, 78vw); background: var(--surface); border: 1px solid var(--border); border-radius: 22px;
   padding: 38px; flex-shrink: 0; transform-style: preserve-3d; will-change: transform, opacity;
+  transition: border-color .4s, box-shadow .4s;
 }
+.t3d-card.is-centered { border-color: rgba(167,139,250,.4); box-shadow: 0 25px 70px rgba(167,139,250,.18); }
+.t3d-card.is-centered .t-stars { text-shadow: 0 0 18px rgba(167,139,250,.6); }
 .t3d-card .t-stars { color: var(--accent); font-size: .95rem; letter-spacing: 3px; margin-bottom: 20px; }
 .t3d-card .t-text { color: #bbbcc8; line-height: 1.82; font-size: .95rem; font-weight: 300; }
 .t3d-card .t-author { margin-top: 22px; font-family: var(--font-mono); font-size: .74rem; color: var(--muted-2); text-transform: uppercase; letter-spacing: .5px; }
 .t3d-progress { width: min(320px, 60vw); height: 2px; background: var(--border); border-radius: 2px; margin: 46px auto 0; overflow: hidden; flex-shrink: 0; }
 .t3d-progress-fill { display: block; height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), var(--accent-2)); border-radius: 2px; }
 .t3d-hint { text-align: center; margin-top: 14px; font-family: var(--font-mono); font-size: .72rem; color: var(--muted-2); letter-spacing: .5px; flex-shrink: 0; }
-
+ 
 /* Touch devices / reduced motion: fall back to a natural swipeable row instead of scroll-jacking */
 .t3d-wrap.t3d-static { height: auto !important; }
 .t3d-wrap.t3d-static .t3d-pin { position: relative; top: auto; height: auto; padding: 0 0 80px; overflow: visible; }
 .t3d-wrap.t3d-static .t3d-track { overflow-x: auto; scroll-snap-type: x proximity; -webkit-overflow-scrolling: touch; padding: 4px 8% 20px; transform: none !important; }
 .t3d-wrap.t3d-static .t3d-card { scroll-snap-align: center; transform: none !important; opacity: 1 !important; }
 .t3d-wrap.t3d-static .t3d-progress, .t3d-wrap.t3d-static .t3d-hint { display: none; }
+ 
+#faq .label { justify-content: center; }
+#faq .label::before { display: none; }
  
 #contact { text-align: center; padding: 80px 8% 140px; }
 #contact .label { justify-content: center; }
@@ -418,9 +466,29 @@ footer { padding: 40px 8%; border-top: 1px solid var(--border); display: flex; j
 .strip-item .big { font-family: var(--font-display); font-size: 2.4rem; font-weight: 700; letter-spacing: -1px; background: linear-gradient(110deg, var(--accent), var(--accent-2)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; display: block; margin-bottom: 6px; }
 .strip-item p { color: var(--muted); font-size: .88rem; font-weight: 300; line-height: 1.6; }
 @media (max-width: 900px) { .about-grid { grid-template-columns: 1fr; gap: 50px; } .about-strip { grid-template-columns: 1fr; } .strip-item { border-right: none; border-bottom: 1px solid var(--border); } .strip-item:last-child { border-bottom: none; } }
+ 
+/* ── FAQ — quiet accordion, single boldness spent on the plus/rotate ── */
+.faq-list { max-width: 780px; margin: 0 auto; }
+.faq-item { border-bottom: 1px solid var(--border); }
+.faq-q { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 26px 4px; background: none; border: none; text-align: left; cursor: pointer; color: var(--text); font-family: var(--font-display); font-size: 1.05rem; font-weight: 600; }
+.faq-q-icon { flex-shrink: 0; width: 30px; height: 30px; border-radius: 9px; border: 1px solid var(--border-2); display: flex; align-items: center; justify-content: center; color: var(--accent); transition: transform .45s var(--ease-out), background .3s, border-color .3s; }
+.faq-item.open .faq-q-icon { transform: rotate(135deg); background: var(--accent-soft); border-color: rgba(167,139,250,.35); }
+.faq-a { max-height: 0; overflow: hidden; transition: max-height .5s var(--ease-out); }
+.faq-a p { color: var(--muted); font-size: .93rem; font-weight: 300; line-height: 1.8; padding: 0 4px 26px; max-width: 640px; }
+.faq-item:hover .faq-q { color: var(--accent); }
 </style>
 </head>
 <body>
+ 
+<div class="preloader" id="preloader">
+  <div class="preloader-mark">
+    <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4 5L10 15L16 5" stroke="#a78bfa" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+  <div class="preloader-bar"><span class="preloader-bar-fill" id="preloaderFill"></span></div>
+  <div class="preloader-word">Vanta Studios</div>
+</div>
  
 <div id="progress"></div>
 <div id="c-dot"></div>
@@ -437,19 +505,22 @@ footer { padding: 40px 8%; border-top: 1px solid var(--border); display: flex; j
 <div class="grain"></div>
  
 <nav class="nav" id="nav">
-  <div class="nav-logo">
+  <a class="nav-logo" href="#home" aria-label="Vanta Studios — home">
     <div class="nav-logo-mark">
       <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M4 5L10 15L16 5" stroke="#a78bfa" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </div>
     VANTA
-  </div>
-  <ul class="nav-links">
-    <li><a href="#services">Services</a></li>
-    <li><a href="#process">Process</a></li>
-    <li><a href="#work">Work</a></li>
-    <li><a href="#about">About</a></li>
+  </a>
+  <ul class="nav-links" id="navLinks">
+    <span class="nav-pill" id="navPill"></span>
+    <li><a href="#services" data-nav-target="services">Services</a></li>
+    <li><a href="#about" data-nav-target="about">About</a></li>
+    <li><a href="#process" data-nav-target="process">Process</a></li>
+    <li><a href="#work" data-nav-target="work">Work</a></li>
+    <li><a href="#testimonials" data-nav-target="testimonials">Reviews</a></li>
+    <li><a href="#faq" data-nav-target="faq">FAQ</a></li>
     <li><a href="#contact" class="nav-cta" data-magnet>Start a project</a></li>
   </ul>
   <button class="hamburger" id="hamburger" aria-label="Open menu">
@@ -459,9 +530,13 @@ footer { padding: 40px 8%; border-top: 1px solid var(--border); display: flex; j
  
 <div class="mobile-menu" id="mobileMenu">
   <button class="close-x" id="closeX">✕</button>
+  <a href="#home">Home</a>
   <a href="#services">Services</a>
+  <a href="#about">About</a>
   <a href="#process">Process</a>
   <a href="#work">Work</a>
+  <a href="#testimonials">Reviews</a>
+  <a href="#faq">FAQ</a>
   <a href="#contact">Contact</a>
 </div>
  
@@ -479,8 +554,8 @@ footer { padding: 40px 8%; border-top: 1px solid var(--border); display: flex; j
         Vanta partners with ambitious brands to design and engineer digital products that look expensive, run fast, and convert — from first sketch to production deploy.
       </p>
       <div class="hero-btns">
-        <a href="#contact" class="btn-primary" data-magnet>Start a project <i class="fa-solid fa-arrow-right"></i></a>
-        <a href="#work" class="btn-ghost" data-magnet>View work</a>
+        <a href="#contact" class="btn-primary sheen" data-magnet>Start a project <i class="fa-solid fa-arrow-right"></i></a>
+        <a href="#work" class="btn-ghost sheen" data-magnet>View work</a>
       </div>
       <div class="hero-stats">
         <div class="stat"><b>5+</b><span>Projects shipped</span></div>
@@ -686,7 +761,7 @@ footer { padding: 40px 8%; border-top: 1px solid var(--border); display: flex; j
 </div>
  
 <section id="work">
-
+ 
   <div class="pf3d-wrap" id="pf3dWrap">
     <div class="pf3d-pin" id="pf3dPin">
       <div class="pf3d-heading">
@@ -695,7 +770,7 @@ footer { padding: 40px 8%; border-top: 1px solid var(--border); display: flex; j
       </div>
       <div class="pf3d-stage" id="pf3dStage">
         <div class="pf3d-hero-card" id="pf3dHeroCard">
-          <img src="pizzax.PNG" alt="PizzaX Website">
+          <img src="pizzax.PNG" alt="PizzaX Website" loading="lazy" decoding="async">
           <div class="pf3d-hero-label">PizzaX — Restaurant</div>
         </div>
         <div class="pf3d-sphere" id="pf3dSphere"></div>
@@ -703,7 +778,7 @@ footer { padding: 40px 8%; border-top: 1px solid var(--border); display: flex; j
       <div class="t3d-progress"><span class="t3d-progress-fill" id="pf3dProgFill"></span></div>
     </div>
   </div>
-
+ 
   <div class="section" style="padding-top:70px;">
   <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:60px;gap:30px;flex-wrap:wrap;">
     <div>
@@ -716,37 +791,40 @@ footer { padding: 40px 8%; border-top: 1px solid var(--border); display: flex; j
     <div class="portfolio-card reveal delay-1">
       <div class="portfolio-thumb">
     <div class="thumb-curtain dir-top"></div>
-    <img src="pizzax.PNG" alt="PizzaX Website">
+    <img src="pizzax.PNG" alt="PizzaX Website" loading="lazy" decoding="async">
     <span class="thumb-label">Restaurant</span>
 </div>
       <div class="portfolio-body">
         <div class="category">Food & Dining</div>
         <h3>PizzaX</h3>
         <p>Premium restaurant site with online ordering and luxury motion design.</p>
+        <div class="portfolio-tags"><span>Online ordering</span><span>Motion design</span><span>Mobile-first</span></div>
       </div>
     </div>
     <div class="portfolio-card reveal delay-2">
       <div class="portfolio-thumb">
     <div class="thumb-curtain dir-right"></div>
-    <img src="pulsefit.PNG" alt="Pulse fit Website">
+    <img src="pulsefit.PNG" alt="Pulse fit Website" loading="lazy" decoding="async">
     <span class="thumb-label">Fitness</span>
 </div>
       <div class="portfolio-body">
         <div class="category">Health & Wellness</div>
         <h3>PulseFit Studio</h3>
         <p>Bold landing page and booking flow built for a boutique fitness brand.</p>
+        <div class="portfolio-tags"><span>Class booking</span><span>Brand identity</span><span>Responsive UI</span></div>
       </div>
     </div>
     <div class="portfolio-card reveal delay-3">
       <div class="portfolio-thumb">
     <div class="thumb-curtain"></div>
-    <img src="pets paw.PNG" alt="Pets paw website">
+    <img src="pets paw.PNG" alt="Pets paw website" loading="lazy" decoding="async">
     <span class="thumb-label">Veterinary</span>
 </div>
       <div class="portfolio-body">
         <div class="category">Healthcare</div>
         <h3>PetPaws Veterinary</h3>
         <p>Sleek, minimalist design reflecting the clinic's calm, trusted care.</p>
+        <div class="portfolio-tags"><span>Appointment flow</span><span>Content design</span><span>SEO setup</span></div>
       </div>
     </div>
   </div>
@@ -772,6 +850,35 @@ footer { padding: 40px 8%; border-top: 1px solid var(--border); display: flex; j
       </div>
       <div class="t3d-progress"><span class="t3d-progress-fill" id="t3dProgFill"></span></div>
       <div class="t3d-hint">Keep scrolling ↓</div>
+    </div>
+  </div>
+</section>
+ 
+<section class="section" id="faq">
+  <div class="section-head" style="justify-content:center;text-align:center;flex-direction:column;align-items:center;margin-bottom:50px;">
+    <div class="label reveal" style="justify-content:center;">FAQ</div>
+    <h2 class="section-h2 reveal kinetic">Questions, answered.</h2>
+  </div>
+  <div class="faq-list">
+    <div class="faq-item reveal delay-1">
+      <button class="faq-q"><span>How long does a typical project take?</span><span class="faq-q-icon"><i class="fa-solid fa-plus"></i></span></button>
+      <div class="faq-a"><p>Most single-page or small business sites take 2–4 weeks from kickoff to launch. Larger builds with custom booking, ordering, or CMS work usually run 4–8 weeks. You'll get a firm timeline after the strategy call, before any design starts.</p></div>
+    </div>
+    <div class="faq-item reveal delay-1">
+      <button class="faq-q"><span>What do you need from me to get started?</span><span class="faq-q-icon"><i class="fa-solid fa-plus"></i></span></button>
+      <div class="faq-a"><p>Just your brand basics — logo if you have one, any existing content or photos, and a short call to talk through goals. If you don't have brand assets yet, we can build those as part of the project.</p></div>
+    </div>
+    <div class="faq-item reveal delay-2">
+      <button class="faq-q"><span>Do you work with businesses outside Pakistan?</span><span class="faq-q-icon"><i class="fa-solid fa-plus"></i></span></button>
+      <div class="faq-a"><p>Yes. We run every project remotely over calls, WhatsApp and shared boards, and we've delivered smoothly for clients across time zones. Distance hasn't been a blocker for any project so far.</p></div>
+    </div>
+    <div class="faq-item reveal delay-2">
+      <button class="faq-q"><span>What happens after the site goes live?</span><span class="faq-q-icon"><i class="fa-solid fa-plus"></i></span></button>
+      <div class="faq-a"><p>We stay reachable for fixes and small changes after launch, and we're upfront if something needs a bigger scope of work. We'd rather you call us with a question than sit on a broken page.</p></div>
+    </div>
+    <div class="faq-item reveal delay-3">
+      <button class="faq-q"><span>How much does a project cost?</span><span class="faq-q-icon"><i class="fa-solid fa-plus"></i></span></button>
+      <div class="faq-a"><p>It depends on scope — a landing page costs less than a full site with ordering or booking built in. Reach out with a short description of what you need and we'll give you a straight number, not a range designed to lock you into a call.</p></div>
     </div>
   </div>
 </section>
@@ -808,22 +915,115 @@ footer { padding: 40px 8%; border-top: 1px solid var(--border); display: flex; j
 (function(){
   var reduced = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
  
+  /* PRELOADER — short branded hold so the page never flashes in half-rendered */
+  (function(){
+    var loader = document.getElementById('preloader');
+    var fill = document.getElementById('preloaderFill');
+    if(!loader) return;
+    if(reduced){ loader.remove(); return; }
+    var pct = 0;
+    var iv = setInterval(function(){
+      pct += (100 - pct) * 0.12 + 1.2;
+      if(pct > 92) pct = 92;
+      fill.style.width = pct + '%';
+    }, 90);
+    function finish(){
+      clearInterval(iv);
+      fill.style.width = '100%';
+      setTimeout(function(){
+        loader.classList.add('hidden');
+        setTimeout(function(){ loader.remove(); }, 750);
+      }, 220);
+    }
+    var minTimer = setTimeout(finish, 900);
+    window.addEventListener('load', function(){ /* let the min-timer own it unless load is later */ });
+  })();
+ 
   var nav = document.getElementById('nav');
   var prog = document.getElementById('progress');
   var heroInner = document.querySelector('.hero-inner');
-  function onScroll(){
+  var ambientEl = document.querySelector('.ambient');
+  var ambientMouseX = 0, ambientMouseY = 0, ambientScrollY = 0;
+  function applyAmbientTransform(){
+    if(ambientEl) ambientEl.style.transform = 'translate(' + ambientMouseX + 'px,' + (ambientMouseY + ambientScrollY) + 'px)';
+  }
+  function updateScrollUI(){
+    scrollTicking = false;
     nav.classList.toggle('scrolled', window.scrollY > 40);
     var h = document.documentElement.scrollHeight - window.innerHeight;
-    prog.style.width = h > 0 ? (window.scrollY / h * 100) + '%' : '0%';
+    var sy = window.scrollY;
+    prog.style.width = h > 0 ? (sy / h * 100) + '%' : '0%';
     if(heroInner && !reduced){
       var vh = window.innerHeight;
-      var p = Math.min(window.scrollY / (vh*0.9), 1);
+      var p = Math.min(sy / (vh*0.9), 1);
       heroInner.style.opacity = 1 - p*0.9;
       heroInner.style.transform = 'translateY(' + (p*50) + 'px)';
     }
+    if(!reduced){
+      ambientScrollY = sy * 0.035;
+      applyAmbientTransform();
+    }
+  }
+  var scrollTicking = false;
+  function onScroll(){
+    if(!scrollTicking){ requestAnimationFrame(updateScrollUI); scrollTicking = true; }
   }
   window.addEventListener('scroll', onScroll, {passive:true});
-  onScroll();
+  updateScrollUI();
+ 
+  /* NAV SCROLL-SPY — slides a pill highlight under the section currently in view.
+     Position-based rather than visible-ratio-based: #work and #testimonials are
+     very tall pinned scroll-jack sections, so their visible fraction of their own
+     height rarely crosses a ratio threshold even while you're fully inside them. */
+  (function(){
+    var navLinks = document.getElementById('navLinks');
+    var pill = document.getElementById('navPill');
+    if(!navLinks || !pill) return;
+    var links = {};
+    navLinks.querySelectorAll('a[data-nav-target]').forEach(function(a){
+      links[a.getAttribute('data-nav-target')] = a;
+    });
+    var targets = Object.keys(links).map(function(id){ return document.getElementById(id); }).filter(Boolean);
+    if(!targets.length) return;
+ 
+    function movePill(link){
+      if(!link || window.innerWidth <= 860){ pill.style.opacity = 0; return; }
+      var lr = link.getBoundingClientRect();
+      var cr = navLinks.getBoundingClientRect();
+      pill.style.opacity = 1;
+      pill.style.width = lr.width + 'px';
+      pill.style.transform = 'translateX(' + (lr.left - cr.left) + 'px)';
+    }
+ 
+    var current = null;
+    function computeActive(){
+      var refY = window.innerHeight * 0.35;
+      var activeId = null;
+      for(var i=0;i<targets.length;i++){
+        var r = targets[i].getBoundingClientRect();
+        if(r.top <= refY && r.bottom > refY){ activeId = targets[i].id; break; }
+      }
+      if(!activeId){
+        for(var j=targets.length-1;j>=0;j--){
+          if(targets[j].getBoundingClientRect().top <= refY){ activeId = targets[j].id; break; }
+        }
+      }
+      if(activeId && links[activeId] && activeId !== current){
+        current = activeId;
+        movePill(links[activeId]);
+      }
+    }
+ 
+    var spyTicking = false;
+    function onSpyScroll(){
+      if(!spyTicking){ requestAnimationFrame(function(){ spyTicking = false; computeActive(); }); spyTicking = true; }
+    }
+    window.addEventListener('scroll', onSpyScroll, {passive:true});
+    window.addEventListener('resize', function(){
+      if(current && links[current]) movePill(links[current]); else computeActive();
+    });
+    computeActive();
+  })();
  
   var ham = document.getElementById('hamburger');
   var menu = document.getElementById('mobileMenu');
@@ -835,6 +1035,27 @@ footer { padding: 40px 8%; border-top: 1px solid var(--border); display: flex; j
   });
   closeX.addEventListener('click', closeMenu);
   menu.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', closeMenu); });
+ 
+  /* FAQ ACCORDION — one open at a time, smooth height transition */
+  (function(){
+    var items = document.querySelectorAll('.faq-item');
+    if(!items.length) return;
+    items.forEach(function(item){
+      var q = item.querySelector('.faq-q');
+      var a = item.querySelector('.faq-a');
+      q.addEventListener('click', function(){
+        var isOpen = item.classList.contains('open');
+        items.forEach(function(other){
+          other.classList.remove('open');
+          other.querySelector('.faq-a').style.maxHeight = null;
+        });
+        if(!isOpen){
+          item.classList.add('open');
+          a.style.maxHeight = a.scrollHeight + 'px';
+        }
+      });
+    });
+  })();
  
   var revealEls = document.querySelectorAll('.reveal');
   var io = new IntersectionObserver(function(entries){
@@ -891,10 +1112,12 @@ footer { padding: 40px 8%; border-top: 1px solid var(--border); display: flex; j
   (function(){
     var canvas = document.getElementById('starfield');
     if(!canvas) return;
-    var ctx = canvas.getContext('2d');
-    var dpr = Math.min(window.devicePixelRatio||1, 2);
+    var ctx = canvas.getContext('2d', { alpha: true });
+    var dpr = Math.min(window.devicePixelRatio||1, 1.5);
     var w, h, scrollY = window.scrollY;
+    var isSmall = window.innerWidth < 700;
  
+    var resizeRaf = null;
     function resize(){
       w = window.innerWidth; h = window.innerHeight;
       canvas.width = w*dpr; canvas.height = h*dpr;
@@ -902,11 +1125,14 @@ footer { padding: 40px 8%; border-top: 1px solid var(--border); display: flex; j
       ctx.setTransform(dpr,0,0,dpr,0,0);
     }
     resize();
-    window.addEventListener('resize', resize);
+    window.addEventListener('resize', function(){
+      if(resizeRaf) cancelAnimationFrame(resizeRaf);
+      resizeRaf = requestAnimationFrame(resize);
+    });
     window.addEventListener('scroll', function(){ scrollY = window.scrollY; }, {passive:true});
  
-    var COUNT = Math.round((window.innerWidth*window.innerHeight)/9000);
-    COUNT = Math.max(70, Math.min(COUNT, 220));
+    var COUNT = Math.round((window.innerWidth*window.innerHeight)/(isSmall?14000:9000));
+    COUNT = Math.max(50, Math.min(COUNT, isSmall?90:200));
     var stars = [];
     for(var i=0;i<COUNT;i++){
       var warm = Math.random() < .12;
@@ -925,6 +1151,7 @@ footer { padding: 40px 8%; border-top: 1px solid var(--border); display: flex; j
     }
  
     var t = 0;
+    var rafId = null;
     var reducedLocal = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
  
     function draw(){
@@ -941,9 +1168,14 @@ footer { padding: 40px 8%; border-top: 1px solid var(--border); display: flex; j
         ctx.arc(px, py, s.size, 0, Math.PI*2);
         ctx.fill();
       });
-      requestAnimationFrame(draw);
+      rafId = requestAnimationFrame(draw);
     }
-    draw();
+    function startLoop(){ if(!rafId) rafId = requestAnimationFrame(draw); }
+    function stopLoop(){ if(rafId){ cancelAnimationFrame(rafId); rafId = null; } }
+    document.addEventListener('visibilitychange', function(){
+      document.hidden ? stopLoop() : startLoop();
+    });
+    startLoop();
   })();
  
   /* HERO SIGNATURE VISUAL — rotating particle energy ring */
@@ -951,7 +1183,7 @@ footer { padding: 40px 8%; border-top: 1px solid var(--border); display: flex; j
     var canvas = document.getElementById('heroCanvas');
     if(!canvas) return;
     var ctx = canvas.getContext('2d');
-    var dpr = Math.min(window.devicePixelRatio||1, 2);
+    var dpr = Math.min(window.devicePixelRatio||1, 1.75);
  
     function resize(){
       var rect = canvas.parentElement.getBoundingClientRect();
@@ -975,19 +1207,6 @@ footer { padding: 40px 8%; border-top: 1px solid var(--border); display: flex; j
         warm: Math.random() < .18,
         emerald: Math.random() < .35
       });
-    }
- 
-    var t = 0;
-    if(reduced){
-      drawFrame(0);
-    } else {
-      requestAnimationFrame(loop);
-    }
- 
-    function loop(){
-      t += 1;
-      drawFrame(t);
-      requestAnimationFrame(loop);
     }
  
     function drawFrame(tick){
@@ -1028,6 +1247,30 @@ footer { padding: 40px 8%; border-top: 1px solid var(--border); display: flex; j
       ctx.arc(cx, cy, baseR*0.5, 0, Math.PI*2);
       ctx.fill();
     }
+ 
+    var t = 0;
+    var heroRafId = null;
+    var heroVisible = true;
+    function loop(){
+      t += 1;
+      drawFrame(t);
+      if(heroVisible && !document.hidden){ heroRafId = requestAnimationFrame(loop); } else { heroRafId = null; }
+    }
+    if(reduced){
+      drawFrame(0);
+    } else {
+      loop();
+      document.addEventListener('visibilitychange', function(){
+        if(!document.hidden && !heroRafId && heroVisible){ loop(); }
+      });
+      var heroIo = new IntersectionObserver(function(entries){
+        entries.forEach(function(en){
+          heroVisible = en.isIntersecting;
+          if(heroVisible && !heroRafId && !document.hidden){ loop(); }
+        });
+      }, {threshold: 0});
+      heroIo.observe(canvas);
+    }
   })();
  
   function tilt(el, strength, lift){
@@ -1043,7 +1286,7 @@ footer { padding: 40px 8%; border-top: 1px solid var(--border); display: flex; j
   }
   tilt(document.getElementById('uiMockup'));
   document.querySelectorAll('.portfolio-card').forEach(function(card){ tilt(card, 5, true); });
-
+ 
   /* SPOTLIGHT — service cards track the cursor with a soft glow */
   document.querySelectorAll('.service-card').forEach(function(card){
     card.addEventListener('mousemove', function(e){
@@ -1052,7 +1295,7 @@ footer { padding: 40px 8%; border-top: 1px solid var(--border); display: flex; j
       card.style.setProperty('--my', ((e.clientY-r.top)/r.height*100)+'%');
     });
   });
-
+ 
   /* COUNT-UP — animate numeric stats once they enter view */
   function animateCount(el){
     var raw = el.textContent.trim();
@@ -1080,7 +1323,7 @@ footer { padding: 40px 8%; border-top: 1px solid var(--border); display: flex; j
     });
   }, {threshold:.6});
   countEls.forEach(function(el){ cio.observe(el); });
-
+ 
   /* TEXT SCRAMBLE — nav links resolve from random glyphs on hover */
   var scrambleChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ#$%&*';
   function scramble(el){
@@ -1104,7 +1347,7 @@ footer { padding: 40px 8%; border-top: 1px solid var(--border); display: flex; j
   document.querySelectorAll('.nav-links a:not(.nav-cta)').forEach(function(a){
     a.addEventListener('mouseenter', function(){ scramble(a); });
   });
-
+ 
   /* RIPPLE — contact pills pulse outward from the click point */
   document.querySelectorAll('.contact-pill').forEach(function(pill){
     pill.addEventListener('click', function(e){
@@ -1135,15 +1378,21 @@ footer { padding: 40px 8%; border-top: 1px solid var(--border); display: flex; j
     var dot = document.getElementById('c-dot');
     var ring = document.getElementById('c-ring');
     var mx=0,my=0,rx=0,ry=0;
+    var ringRafId = null;
+    function ringLoop(){
+      rx += (mx-rx)*.15; ry += (my-ry)*.15;
+      ring.style.left = rx+'px'; ring.style.top = ry+'px';
+      if(Math.abs(mx-rx) > 0.4 || Math.abs(my-ry) > 0.4){
+        ringRafId = requestAnimationFrame(ringLoop);
+      } else {
+        ringRafId = null;
+      }
+    }
     window.addEventListener('mousemove', function(e){
       mx = e.clientX; my = e.clientY;
       dot.style.left = mx+'px'; dot.style.top = my+'px';
+      if(!ringRafId){ ringRafId = requestAnimationFrame(ringLoop); }
     });
-    (function loop(){
-      rx += (mx-rx)*.15; ry += (my-ry)*.15;
-      ring.style.left = rx+'px'; ring.style.top = ry+'px';
-      requestAnimationFrame(loop);
-    })();
     document.querySelectorAll('a, button, [data-magnet]').forEach(function(el){
       el.addEventListener('mouseenter', function(){ ring.classList.add('hovering'); });
       el.addEventListener('mouseleave', function(){ ring.classList.remove('hovering'); });
@@ -1151,18 +1400,18 @@ footer { padding: 40px 8%; border-top: 1px solid var(--border); display: flex; j
   }
  
   var hero = document.getElementById('home');
-  var ambient = document.querySelector('.ambient');
-  if(hero && ambient && !reduced){
+  if(hero && ambientEl && !reduced){
     hero.addEventListener('mousemove', function(e){
-      var x = (e.clientX/window.innerWidth - .5)*18;
-      var y = (e.clientY/window.innerHeight - .5)*18;
-      ambient.style.transform = 'translate('+x+'px,'+y+'px)';
+      ambientMouseX = (e.clientX/window.innerWidth - .5)*18;
+      ambientMouseY = (e.clientY/window.innerHeight - .5)*18;
+      applyAmbientTransform();
     });
     hero.addEventListener('mouseleave', function(){
-      ambient.style.transform = '';
+      ambientMouseX = 0; ambientMouseY = 0;
+      applyAmbientTransform();
     });
   }
-
+ 
   /* TESTIMONIALS 3D SCROLL-JACK — pins the section full-screen and converts
      vertical scroll into horizontal motion through a coverflow of cards,
      then releases back to normal vertical scrolling once the cards end. */
@@ -1171,17 +1420,17 @@ footer { padding: 40px 8%; border-top: 1px solid var(--border); display: flex; j
     var track = document.getElementById('t3dTrack');
     var progFill = document.getElementById('t3dProgFill');
     if(!wrap || !track) return;
-
+ 
     var isTouch = window.matchMedia('(hover: none), (pointer: coarse)').matches;
     if(isTouch || reduced){
       wrap.classList.add('t3d-static');
       return;
     }
-
+ 
     var cards = Array.prototype.slice.call(track.querySelectorAll('.t3d-card'));
     var cardData = [];
     var extra = 0;
-
+ 
     function measure(){
       track.style.transform = 'translateX(0px)';
       var trackWidth = track.scrollWidth;
@@ -1192,7 +1441,7 @@ footer { padding: 40px 8%; border-top: 1px solid var(--border); display: flex; j
       });
       update();
     }
-
+ 
     var ticking = false;
     function update(){
       ticking = false;
@@ -1202,7 +1451,7 @@ footer { padding: 40px 8%; border-top: 1px solid var(--border); display: flex; j
       var tx = -progress * extra;
       track.style.transform = 'translateX(' + tx + 'px)';
       if(progFill) progFill.style.width = (progress * 100) + '%';
-
+ 
       var vw = window.innerWidth;
       var center = vw / 2;
       cardData.forEach(function(d){
@@ -1215,6 +1464,7 @@ footer { padding: 40px 8%; border-top: 1px solid var(--border); display: flex; j
         var op = Math.max(1 - Math.abs(norm) * 0.6, 0.22);
         d.el.style.transform = 'rotateY(' + rotY + 'deg) translateZ(' + tz + 'px) scale(' + scale + ')';
         d.el.style.opacity = op;
+        d.el.classList.toggle('is-centered', Math.abs(norm) < 0.12);
       });
     }
     function onScroll(){
@@ -1224,7 +1474,7 @@ footer { padding: 40px 8%; border-top: 1px solid var(--border); display: flex; j
     window.addEventListener('resize', measure);
     measure();
   })();
-
+ 
   /* PORTFOLIO SPHERE — a single featured card blooms into a spinning 3D
      sphere of cards, rotates to its exact antipode, then expands and
      vanishes to reveal the full case-study grid. */
@@ -1235,10 +1485,10 @@ footer { padding: 40px 8%; border-top: 1px solid var(--border); display: flex; j
     var ofMany = document.getElementById('pf3dOfMany');
     var progFill = document.getElementById('pf3dProgFill');
     if(!wrap || !sphere || !heroCard) return;
-
+ 
     function map(v,a,b,c,d){ return c + (v-a)/(b-a)*(d-c); }
     function clamp01(v){ return Math.max(0, Math.min(1, v)); }
-
+ 
     var isTouch = window.matchMedia('(hover: none), (pointer: coarse)').matches;
     if(isTouch || reduced){
       wrap.classList.add('pf3d-static');
@@ -1246,7 +1496,7 @@ footer { padding: 40px 8%; border-top: 1px solid var(--border); display: flex; j
       if(ofMany){ ofMany.style.opacity = 1; ofMany.style.transform = 'none'; }
       return;
     }
-
+ 
     var R = 210;
     var realCards = [
       { src:'pizzax.PNG', label:'PizzaX — Restaurant' },
@@ -1257,7 +1507,7 @@ footer { padding: 40px 8%; border-top: 1px solid var(--border); display: flex; j
     nodesData.push({ x:0, y:0, z:R, real: realCards[0] });   // front: same card as the hero
     nodesData.push({ x:0, y:0, z:-R, real: realCards[1] });  // exact antipode
     nodesData.push({ x:R, y:0, z:0, real: realCards[2] });   // third real project, on the equator
-
+ 
     var placeholderCount = 15;
     var offset = 2 / placeholderCount;
     var increment = Math.PI * (3 - Math.sqrt(5));
@@ -1270,24 +1520,24 @@ footer { padding: 40px 8%; border-top: 1px solid var(--border); display: flex; j
       if(Math.abs(zv) > 0.9 || (Math.abs(xv) > 0.9 && Math.abs(yv) < 0.1)) continue;
       nodesData.push({ x: xv*R, y: yv*R, z: zv*R, real: null });
     }
-
+ 
     var nodeEls = nodesData.map(function(d){
       var el = document.createElement('div');
       el.className = 'sphere-node' + (d.real ? '' : ' placeholder');
       el.innerHTML = d.real
-        ? '<img src="'+d.real.src+'" alt=""><span class="sn-label">'+d.real.label+'</span>'
+        ? '<img src="'+d.real.src+'" alt="" loading="lazy" decoding="async"><span class="sn-label">'+d.real.label+'</span>'
         : '<i class="fa-solid fa-image"></i>';
       sphere.appendChild(el);
       return { el: el, x: d.x, y: d.y, z: d.z };
     });
-
+ 
     var scrollRange = 0;
     function measure(){
       scrollRange = wrap.offsetHeight - window.innerHeight;
     }
     measure();
     window.addEventListener('resize', measure);
-
+ 
     var ticking = false;
     function render(){
       ticking = false;
@@ -1295,21 +1545,21 @@ footer { padding: 40px 8%; border-top: 1px solid var(--border); display: flex; j
       var scrolled = -rect.top;
       var p = scrollRange > 0 ? clamp01(scrolled / scrollRange) : 0;
       if(progFill) progFill.style.width = (p*100) + '%';
-
+ 
       var heroP = clamp01(map(p, 0, 0.14, 1, 0));
       heroCard.style.opacity = heroP;
       heroCard.style.transform = 'translate(-50%,-50%) scale(' + (0.4 + heroP*0.6) + ')';
       heroCard.style.pointerEvents = heroP > 0.5 ? 'auto' : 'none';
-
+ 
       var sphereInP = clamp01(map(p, 0.10, 0.30, 0, 1));
       var ofManyP = clamp01(map(p, 0.12, 0.24, 0, 1));
       if(ofMany){ ofMany.style.opacity = ofManyP; ofMany.style.transform = 'translateX(' + (10 - 10*ofManyP) + 'px)'; }
-
+ 
       var theta = clamp01(map(p, 0.30, 0.78, 0, 1)) * Math.PI;
       var expandP = clamp01(map(p, 0.80, 1.0, 0, 1));
       var expandScale = 1 + expandP*4.5;
       var expandFade = 1 - expandP;
-
+ 
       var cosT = Math.cos(theta), sinT = Math.sin(theta);
       nodeEls.forEach(function(n){
         var rx = n.x*cosT + n.z*sinT;
