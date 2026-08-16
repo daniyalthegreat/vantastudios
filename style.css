@@ -147,7 +147,7 @@ header, main, footer, section { position: relative; z-index: 2; }
 .hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
 .hamburger.open span:nth-child(2) { opacity: 0; }
 .hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
-@media (max-width: 860px) { .nav-links-wrap { display: none; } .hamburger { display: flex; } }
+@media (max-width: 860px), (pointer: coarse) { .nav-links-wrap { display: none; } .hamburger { display: flex; } }
  
 .mobile-menu {
   position: fixed; inset: 0; background: rgba(7,7,10,.97); backdrop-filter: blur(24px); z-index: 9000;
