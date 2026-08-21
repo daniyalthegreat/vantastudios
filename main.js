@@ -141,6 +141,14 @@
         }
       });
     });
+    var resizeIv = null;
+    window.addEventListener('resize', function(){
+      clearTimeout(resizeIv);
+      resizeIv = setTimeout(function(){
+        var openItem = document.querySelector('.faq-item.open .faq-a');
+        if(openItem) openItem.style.maxHeight = openItem.scrollHeight + 'px';
+      }, 120);
+    });
   })();
  
   var revealEls = document.querySelectorAll('.reveal');
