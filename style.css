@@ -379,7 +379,7 @@ header, main, footer, section { position: relative; z-index: 2; }
 /* Touch devices / reduced motion: fall back to a natural swipeable row instead of scroll-jacking */
 .t3d-wrap.t3d-static { height: auto !important; }
 .t3d-wrap.t3d-static .t3d-pin { position: relative; top: auto; height: auto; padding: 0 0 80px; overflow: visible; }
-.t3d-wrap.t3d-static .t3d-track { overflow-x: auto; scroll-snap-type: x proximity; -webkit-overflow-scrolling: touch; padding: 4px 8% 20px; transform: none !important; }
+.t3d-wrap.t3d-static .t3d-track { width: 100%; overflow-x: auto; scroll-snap-type: x proximity; -webkit-overflow-scrolling: touch; padding: 4px 8% 20px; transform: none !important; }
 .t3d-wrap.t3d-static .t3d-card { scroll-snap-align: center; transform: none !important; opacity: 1 !important; }
 .t3d-wrap.t3d-static .t3d-progress, .t3d-wrap.t3d-static .t3d-hint { display: none; }
  
