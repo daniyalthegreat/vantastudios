@@ -151,14 +151,51 @@
     });
   })();
  
+  /* KINETIC TEXT — split headings into masked words for a line-by-line reveal.
+     Tag-safe: walks text nodes only, so nested elements (like <br> or an inline
+     gradient <span>) are preserved instead of being torn apart by the word split. */
+  document.querySelectorAll('.kinetic').forEach(function(el){
+    function wrapWords(node){
+      Array.prototype.slice.call(node.childNodes).forEach(function(child){
+        if(child.nodeType === 3){
+          var bits = child.textContent.split(/(\s+)/).filter(function(w){ return w.length; });
+          var frag = document.createDocumentFragment();
+          bits.forEach(function(w){
+            if(/^\s+$/.test(w)){ frag.appendChild(document.createTextNode(w)); return; }
+            var mask = document.createElement('span');
+            mask.className = 'k-mask';
+            var word = document.createElement('span');
+            word.className = 'k-word';
+            word.textContent = w;
+            mask.appendChild(word);
+            frag.appendChild(mask);
+          });
+          node.replaceChild(frag, child);
+        } else if(child.nodeType === 1 && child.tagName !== 'BR'){
+          wrapWords(child);
+        }
+      });
+    }
+    wrapWords(el);
+    var words = el.querySelectorAll('.k-word');
+    words.forEach(function(w, i){ w.style.transitionDelay = (i*0.05)+'s'; });
+  });
+
+  /* REVEAL + KINETIC — one shared observer per element so a heading that is both
+     .reveal and .kinetic always gets 'visible' and 'k-visible' together, instead of
+     depending on two separate observers with different thresholds firing in sync. */
   var revealEls = document.querySelectorAll('.reveal');
   var io = new IntersectionObserver(function(entries){
     entries.forEach(function(e){
-      if(e.isIntersecting){ e.target.classList.add('visible'); }
+      if(e.isIntersecting){
+        e.target.classList.add('visible');
+        if(e.target.classList.contains('kinetic')) e.target.classList.add('k-visible');
+        io.unobserve(e.target);
+      }
     });
   }, {threshold: .12});
   revealEls.forEach(function(el){ io.observe(el); });
- 
+
   var steps = document.querySelectorAll('.process-step');
   var pio = new IntersectionObserver(function(entries){
     entries.forEach(function(e){
@@ -174,30 +211,15 @@
   }, {threshold: .2});
   var ps = document.getElementById('processSteps');
   if(ps) pio.observe(ps);
- 
-  /* KINETIC TEXT — split headings into masked words for a line-by-line reveal */
-  document.querySelectorAll('.kinetic').forEach(function(el){
-    var html = el.innerHTML;
-    var parts = html.split(/(<br\s*\/?>)/gi);
-    var out = '';
-    parts.forEach(function(part){
-      if(/^<br/i.test(part)){ out += '<br>'; return; }
-      var words = part.trim().split(/\s+/).filter(Boolean);
-      words.forEach(function(w){
-        out += '<span class="k-mask"><span class="k-word">'+w+'</span></span> ';
-      });
-    });
-    el.innerHTML = out;
-    var words = el.querySelectorAll('.k-word');
-    words.forEach(function(w, i){ w.style.transitionDelay = (i*0.05)+'s'; });
-  });
+
+  /* kinetic headings that are NOT also .reveal (hero-adjacent ones) get their own observer */
   if(!reduced){
     var kio = new IntersectionObserver(function(entries){
       entries.forEach(function(e){
         if(e.isIntersecting){ e.target.classList.add('k-visible'); kio.unobserve(e.target); }
       });
     }, {threshold:.3});
-    document.querySelectorAll('.kinetic').forEach(function(el){ kio.observe(el); });
+    document.querySelectorAll('.kinetic:not(.reveal)').forEach(function(el){ kio.observe(el); });
   } else {
     document.querySelectorAll('.kinetic').forEach(function(el){ el.classList.add('k-visible'); });
   }
