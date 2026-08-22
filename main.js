@@ -262,7 +262,7 @@
         driftPhase: Math.random()*Math.PI*2,
         twinkleSpeed: Math.random()*0.02 + 0.006,
         twinklePhase: Math.random()*Math.PI*2,
-        col: warm ? '249,168,124' : (emerald ? '110,231,183' : (Math.random()<.5 ? '167,139,250' : '232,230,240'))
+        col: (Math.random()<.5 ? '255,255,255' : '210,210,215')
       });
     }
  
@@ -331,7 +331,7 @@
       var cx = w/2, cy = h*0.44;
       var baseR = Math.min(w,h)*0.30;
  
-      ctx.strokeStyle = 'rgba(167,139,250,0.10)';
+      ctx.strokeStyle = 'rgba(255,255,255,0.08)';
       ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.ellipse(cx, cy, baseR, baseR*0.6, 0, 0, Math.PI*2);
@@ -345,7 +345,7 @@
         var y = cy + Math.sin(angle)*r*0.6;
         var depth = (Math.sin(angle)+1)/2;
         var alpha = 0.2 + depth*0.7;
-        var col = p.warm ? '249,168,124' : (p.emerald ? '110,231,183' : '167,139,250');
+        var col = p.emerald ? '210,210,215' : '255,255,255';
         ctx.beginPath();
         ctx.fillStyle = 'rgba('+col+','+alpha+')';
         ctx.shadowColor = 'rgba('+col+',0.9)';
@@ -356,8 +356,8 @@
       ctx.shadowBlur = 0;
  
       var grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, baseR*0.5);
-      grad.addColorStop(0, 'rgba(167,139,250,0.20)');
-      grad.addColorStop(1, 'rgba(167,139,250,0)');
+      grad.addColorStop(0, 'rgba(255,255,255,0.12)');
+      grad.addColorStop(1, 'rgba(255,255,255,0)');
       ctx.fillStyle = grad;
       ctx.beginPath();
       ctx.arc(cx, cy, baseR*0.5, 0, Math.PI*2);
@@ -615,9 +615,9 @@
 
     var R = 210;
     var realCards = [
-      { src:'pizzax.PNG', label:'PizzaX — Restaurant' },
-      { src:'pulsefit.PNG', label:'PulseFit — Fitness' },
-      { src:'pets-paw.PNG', label:'PetPaws — Veterinary' }
+      { src:'pizzax.PNG', label:'PizzaX · Restaurant' },
+      { src:'pulsefit.PNG', label:'PulseFit · Fitness' },
+      { src:'pets-paw.PNG', label:'PetPaws · Veterinary' }
     ];
     var nodesData = [];
     nodesData.push({ x:0, y:0, z:R, real: realCards[0] });   // front: same card as the hero
