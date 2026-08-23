@@ -1535,12 +1535,16 @@ footer { padding: 40px 8%; border-top: 1px solid var(--border); display: flex; j
     var realCards = [
       { src:'pizzax.PNG', label:'PizzaX · Restaurant' },
       { src:'pulsefit.PNG', label:'PulseFit · Fitness' },
-      { src:'pets-paw.PNG', label:'PetPaws · Veterinary' }
+      { src:'pets-paw.PNG', label:'PetPaws · Veterinary' },
+      { src:'bolton.PNG', label:'Bolton Market · Marketplace' },
+      { src:'ateleir.PNG', label:'Atelier · Studio' }
     ];
     var nodesData = [];
     nodesData.push({ x:0, y:0, z:R, real: realCards[0] });   // front: same card as the hero
     nodesData.push({ x:0, y:0, z:-R, real: realCards[1] });  // exact antipode
     nodesData.push({ x:R, y:0, z:0, real: realCards[2] });   // third real project, on the equator
+    nodesData.push({ x:-R, y:0, z:0, real: realCards[3] });  // fourth real project, opposite side of the equator
+    nodesData.push({ x:0, y:R, z:0, real: realCards[4] });   // fifth real project, top of the sphere
 
     var placeholderCount = 15;
     var offset = 2 / placeholderCount;
@@ -1551,7 +1555,7 @@ footer { padding: 40px 8%; border-top: 1px solid var(--border); display: flex; j
       var phi = i * increment;
       var xv = Math.cos(phi) * rad;
       var zv = Math.sin(phi) * rad;
-      if(Math.abs(zv) > 0.9 || (Math.abs(xv) > 0.9 && Math.abs(yv) < 0.1)) continue;
+      if(Math.abs(zv) > 0.9 || Math.abs(yv) > 0.85 || (Math.abs(xv) > 0.9 && Math.abs(yv) < 0.1)) continue;
       nodesData.push({ x: xv*R, y: yv*R, z: zv*R, real: null });
     }
 
