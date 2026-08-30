@@ -221,7 +221,36 @@ header, main, footer, section { position: relative; z-index: 2; }
 .hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
 .hamburger.open span:nth-child(2) { opacity: 0; }
 .hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
-@media (max-width: 860px) { .nav-links { display: none; } .hamburger { display: flex; } }
+@media (max-width: 860px) {
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+  .nav {
+    top: 14px;
+    padding: 10px 16px 10px 20px;
+    border-radius: 16px;
+  }
+  .nav-logo {
+    font-size: 1rem;
+  }
+  .nav-logo-mark {
+    width: 24px;
+    height: 24px;
+  }
+  .nav-logo-mark svg {
+    width: 12px;
+    height: 12px;
+  }
+  .hamburger {
+    padding: 6px;
+  }
+}
+@media (max-width: 480px) {
+  .nav {
+    width: 92%;
+    top: 12px;
+    padding: 9px 14px 9px 18px;
+  }
+}
  
 .mobile-menu {
   position: fixed; inset: 0; background: rgba(7,7,10,.97); backdrop-filter: blur(24px); z-index: 9000;
