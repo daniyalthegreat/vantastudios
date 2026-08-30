@@ -503,6 +503,18 @@ header, main, footer, section { position: relative; z-index: 2; }
 @keyframes rippleOut { to { transform: scale(1); opacity: 0; } }
 .contact-pill .icon { width: 36px; height: 36px; border-radius: 10px; background: rgba(255,255,255,.06); color: var(--text); display: flex; align-items: center; justify-content: center; font-size: .9rem; }
 .contact-pill:hover { background: var(--surface-2); border-color: rgba(255,255,255,.35); box-shadow: 0 14px 36px rgba(0,0,0,.3); }
+.contact-pill { cursor: pointer; font-family: inherit; }
+button.contact-pill { -webkit-appearance: none; appearance: none; background: var(--surface); color: var(--text); }
+
+.copy-toast {
+  position: fixed; left: 50%; bottom: 40px; transform: translateX(-50%) translateY(20px);
+  background: var(--surface-2); border: 1px solid var(--border-2); border-radius: 14px;
+  padding: 14px 24px; display: flex; align-items: center; gap: 10px; font-size: .9rem; font-weight: 500;
+  color: var(--text); box-shadow: 0 20px 50px rgba(0,0,0,.5); z-index: 100000;
+  opacity: 0; pointer-events: none; transition: opacity .35s var(--ease-out), transform .35s var(--ease-out);
+}
+.copy-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.copy-toast i { color: var(--accent-2); font-size: .95rem; }
  
 footer { padding: 40px 8%; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; font-family: var(--font-mono); font-size: .78rem; color: var(--muted-2); }
 .footer-logo { font-family: var(--font-display); font-weight: 700; font-size: 1rem; color: var(--text); }
@@ -985,10 +997,10 @@ footer { padding: 40px 8%; border-top: 1px solid var(--border); display: flex; j
       <div class="icon" style="background:rgba(37,211,102,.12);color:#25d366;"><i class="fa-brands fa-whatsapp"></i></div>
       WhatsApp
     </a>
-    <a href="mailto:muhammaddaniyalsohail61@gmail.com" class="contact-pill" data-magnet>
+    <button type="button" class="contact-pill" id="copyEmailBtn" data-magnet data-email="muhammaddaniyalsohail61@gmail.com">
       <div class="icon" style="background:rgba(234,67,53,.1);color:#ea4335;"><i class="fa-solid fa-envelope"></i></div>
-      Gmail
-    </a>
+      Copy Email
+    </button>
     <a href="https://instagram.com/vantastudios.agency" target="_blank" rel="noopener" class="contact-pill" data-magnet>
       <div class="icon" style="background:rgba(249,168,124,.1);color:var(--accent-warm);"><i class="fa-brands fa-instagram"></i></div>
       Instagram
@@ -998,6 +1010,8 @@ footer { padding: 40px 8%; border-top: 1px solid var(--border); display: flex; j
  
 </main>
  
+<div class="copy-toast" id="copyToast"><i class="fa-solid fa-circle-check"></i><span>Email copied!</span></div>
+
 <footer>
   <span class="footer-logo">VANTA</span>
   <span>© 2026 Vanta Studios. Designed &amp; built in-house.</span>
@@ -1485,6 +1499,39 @@ footer { padding: 40px 8%; border-top: 1px solid var(--border); display: flex; j
       setTimeout(function(){ span.remove(); }, 700);
     });
   });
+
+  /* COPY EMAIL — copies address to clipboard and shows a toast for 2s */
+  (function(){
+    var btn = document.getElementById('copyEmailBtn');
+    var toast = document.getElementById('copyToast');
+    if(!btn || !toast) return;
+    var toastTimer = null;
+    function showToast(){
+      clearTimeout(toastTimer);
+      toast.classList.add('show');
+      toastTimer = setTimeout(function(){ toast.classList.remove('show'); }, 2000);
+    }
+    function fallbackCopy(text){
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      try { document.execCommand('copy'); } catch(err) {}
+      document.body.removeChild(ta);
+    }
+    btn.addEventListener('click', function(){
+      var email = btn.getAttribute('data-email');
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(email).then(showToast).catch(function(){ fallbackCopy(email); showToast(); });
+      } else {
+        fallbackCopy(email);
+        showToast();
+      }
+    });
+  })();
  
   document.querySelectorAll('[data-magnet]').forEach(function(el){
     if(reduced) return;
