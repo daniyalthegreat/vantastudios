@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#000000">
 
 <!-- Primary SEO Meta Tags -->
 <title>Vanta Studios | Premium Web Design & Branding Agency Karachi</title>
@@ -74,10 +75,10 @@
  
 <style>
 :root {
-  --bg:        #09090a;
-  --bg-2:      #0e0e10;
-  --surface:   #17171a;
-  --surface-2: #1d1d20;
+  --bg:        #000000;
+  --bg-2:      #050505;
+  --surface:   #0b0b0c;
+  --surface-2: #121214;
   --border:    rgba(255,255,255,.07);
   --border-2:  rgba(255,255,255,.13);
   --text:      #ededef;
@@ -88,6 +89,8 @@
   --accent-glow:  rgba(207,154,107,.32);
   --accent-2:     #e3b88a;
   --accent-warm:  #f9a87c;
+  --border-accent:        rgba(207,154,107,.14);
+  --border-accent-strong: rgba(207,154,107,.42);
  
   --font-display: 'Syne', sans-serif;
   --font-body:    'DM Sans', sans-serif;
@@ -201,10 +204,10 @@ header, main, footer, section { position: relative; z-index: 2; }
 .nav {
   position: fixed; top: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 1160px;
   display: flex; justify-content: space-between; align-items: center;
-  padding: 14px 20px 14px 28px; background: rgba(11,11,15,.5); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  padding: 14px 20px 14px 28px; background: rgba(0,0,0,.55); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--border); border-radius: 20px; z-index: 1000; transition: background .4s, border-color .4s;
 }
-.nav.scrolled { background: rgba(11,11,15,.8); border-color: var(--border-2); }
+.nav.scrolled { background: rgba(0,0,0,.85); border-color: var(--border-2); }
 .nav-logo { font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; letter-spacing: -.3px; display: flex; align-items: center; gap: 10px; }
 .nav-logo-mark { width: 28px; height: 28px; border-radius: 10px; background: var(--accent-soft); border: 1px solid rgba(207,154,107,.3); display: flex; align-items: center; justify-content: center; }
 .nav-logo-mark svg { width: 14px; height: 14px; }
@@ -253,7 +256,7 @@ header, main, footer, section { position: relative; z-index: 2; }
 }
  
 .mobile-menu {
-  position: fixed; inset: 0; background: rgba(7,7,10,.97); backdrop-filter: blur(24px); z-index: 9000;
+  position: fixed; inset: 0; background: rgba(0,0,0,.97); backdrop-filter: blur(24px); z-index: 9000;
   display: flex; flex-direction: column; justify-content: center; align-items: flex-start; padding: 90px 10% 40px; gap: 2px;
   overflow-y: auto; overscroll-behavior: contain;
   transform: translateY(-100%); transition: transform .65s var(--ease-out);
@@ -577,6 +580,47 @@ footer { padding: 40px 8%; border-top: 1px solid var(--border); display: flex; j
 .faq-a p { color: var(--muted); font-size: .93rem; font-weight: 300; line-height: 1.8; padding: 0 4px 26px; max-width: 640px; }
 .faq-item:hover .faq-q { color: #fff; }
 
+
+/* ── PITCH-BLACK + GOLD ACCENT PASS (light touch) ───────────────── */
+html { scrollbar-color: rgba(207,154,107,.4) #000; }
+.gold, .pf3d-ofmany { color: var(--accent); }
+
+/* keep the ambient glow from lifting the black */
+.orb-1 { background: radial-gradient(circle, rgba(255,255,255,.025), transparent 65%); }
+.orb-2 { background: radial-gradient(circle, rgba(255,255,255,.018), transparent 65%); }
+.orb-3 { background: radial-gradient(circle, rgba(249,168,124,.07), transparent 70%); }
+.nebula-1 { opacity: .4; }
+.nebula-2 { opacity: .3; }
+
+/* small gold text touches */
+.label { color: var(--accent); }
+.label::before { background: var(--accent); opacity: .9; }
+.step-num { color: var(--accent); }
+.portfolio-body .category { color: var(--accent); }
+.ticker-sep { color: var(--accent); }
+
+/* nav underline */
+.nav-links a:not(.nav-cta)::after { background: var(--accent); }
+
+/* cards: faint warm edge, brighter on hover */
+.service-card, .portfolio-card, .t3d-card { border-color: var(--border-accent); }
+.service-card:hover, .portfolio-card:hover, .about-value:hover, .team-card:hover, .contact-pill:hover { border-color: var(--border-accent-strong); }
+.t3d-card.is-centered { border-color: var(--border-accent-strong); }
+
+/* progress lines */
+.process-line-fill, .t3d-progress-fill { background: linear-gradient(90deg, rgba(207,154,107,.4), var(--accent-2)); }
+
+/* faq */
+.faq-item.open .faq-q-icon { background: var(--accent-soft); border-color: var(--border-accent-strong); }
+.faq-item:hover .faq-q { color: var(--accent-2); }
+
+/* showcase mockup CTA */
+.ui-nav-btn { background: var(--accent); }
+.ui-hero-line.sm { background: var(--accent); }
+
+/* cursor ring on hover */
+#c-ring.hovering { border-color: rgba(207,154,107,.9); background: var(--accent-soft); }
+
 </style>
 </head>
 <body>
@@ -718,7 +762,7 @@ footer { padding: 40px 8%; border-top: 1px solid var(--border); display: flex; j
  
     <div class="about-left">
       <div class="label reveal from-left">About us</div>
-      <h2 class="reveal from-left kinetic">A small team.<br>Outsized results.</h2>
+      <h2 class="reveal from-left kinetic">A small team.<br><span class="gold">Outsized results.</span></h2>
       <p class="reveal">
         Vanta Studios is a boutique software and design studio based in Karachi. We work with founders, brands, and businesses who want digital products that actually move the needle, not just look pretty in a Figma file.
       </p>
@@ -884,7 +928,7 @@ footer { padding: 40px 8%; border-top: 1px solid var(--border); display: flex; j
   <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:60px;gap:30px;flex-wrap:wrap;">
     <div>
       <div class="label reveal from-left">Full case studies</div>
-      <h2 class="section-h2 reveal from-left kinetic">Every piece, in detail.</h2>
+      <h2 class="section-h2 reveal from-left kinetic">Every piece, <span class="gold">in detail.</span></h2>
     </div>
     <p class="reveal from-right" style="color:var(--muted);max-width:300px;font-weight:300;font-size:.95rem;line-height:1.7;">Projects crafted to elevate brands and create memorable digital experiences.</p>
   </div>
@@ -905,27 +949,27 @@ footer { padding: 40px 8%; border-top: 1px solid var(--border); display: flex; j
     <div class="portfolio-card reveal delay-2">
       <div class="portfolio-thumb">
     <div class="thumb-curtain dir-right"></div>
-    <img src="pulsefit.PNG" alt="PulseFit Boutique Fitness Landing Page by Vanta Studios" loading="lazy" decoding="async">
-    <span class="thumb-label">Fitness</span>
+    <img src="blendz.PNG" alt="BLENDZ by Wasim Barber Studio and Spa Website by Vanta Studios" loading="lazy" decoding="async">
+    <span class="thumb-label">Barber</span>
 </div>
       <div class="portfolio-body">
-        <div class="category">Health & Wellness</div>
-        <h3>PulseFit Studio</h3>
-        <p>Bold landing page and booking flow built for a boutique fitness brand.</p>
-        <div class="portfolio-tags"><span>Class booking</span><span>Brand identity</span><span>Responsive UI</span></div>
+        <div class="category">Beauty &amp; Grooming</div>
+        <h3>BLENDZ by Wasim</h3>
+        <p>Dark green and gold site for a Karachi barber studio and spa, built around one action: reserve a chair.</p>
+        <div class="portfolio-tags"><span>Chair booking</span><span>WhatsApp chat</span><span>Studio gallery</span></div>
       </div>
     </div>
     <div class="portfolio-card reveal delay-3">
       <div class="portfolio-thumb">
     <div class="thumb-curtain"></div>
-    <img src="pets-paw.PNG" alt="PetPaws Minimalist Veterinary Clinic Website by Vanta Studios" loading="lazy" decoding="async">
-    <span class="thumb-label">Veterinary</span>
+    <img src="bazmeadab.PNG" alt="Bazme Adab Urdu Tuition Website by Vanta Studios" loading="lazy" decoding="async">
+    <span class="thumb-label">Education</span>
 </div>
       <div class="portfolio-body">
-        <div class="category">Healthcare</div>
-        <h3>PetPaws Veterinary</h3>
-        <p>Sleek, minimalist design reflecting the clinic's calm, trusted care.</p>
-        <div class="portfolio-tags"><span>Appointment flow</span><span>Content design</span><span>SEO setup</span></div>
+        <div class="category">Education</div>
+        <h3>Bazme Adab</h3>
+        <p>Warm, editorial site for a private Cambridge Urdu tutor, with plans, student login and clear sign-up paths.</p>
+        <div class="portfolio-tags"><span>Student login</span><span>Plans page</span><span>Editorial type</span></div>
       </div>
     </div>
   </div>
@@ -1673,7 +1717,9 @@ footer { padding: 40px 8%; border-top: 1px solid var(--border); display: flex; j
       { src:'pulsefit.PNG', label:'PulseFit · Fitness' },
       { src:'pets-paw.PNG', label:'PetPaws · Veterinary' },
       { src:'bolton.PNG', label:'Bolton Market · Marketplace' },
-      { src:'ateleir.PNG', label:'Atelier · Studio' }
+      { src:'ateleir.PNG', label:'Atelier · Studio' },
+      { src:'blendz.PNG', label:'BLENDZ · Barber Studio' },
+      { src:'bazmeadab.PNG', label:'Bazme Adab · Education' }
     ];
     var nodesData = [];
     nodesData.push({ x:0, y:0, z:R, real: realCards[0] });   // front: same card as the hero
@@ -1681,8 +1727,10 @@ footer { padding: 40px 8%; border-top: 1px solid var(--border); display: flex; j
     nodesData.push({ x:R, y:0, z:0, real: realCards[2] });   // third real project, on the equator
     nodesData.push({ x:-R, y:0, z:0, real: realCards[3] });  // fourth real project, opposite side of the equator
     nodesData.push({ x:0, y:R, z:0, real: realCards[4] });   // fifth real project, top of the sphere
+    nodesData.push({ x:0, y:-R, z:0, real: realCards[5] });  // sixth real project (BLENDZ), bottom pole
+    nodesData.push({ x:R*0.72, y:R*0.5, z:-R*0.47, real: realCards[6] }); // seventh real project (Bazme Adab), upper-right, back-ish, off-axis
 
-    var placeholderCount = 15;
+    var placeholderCount = 13;
     var offset = 2 / placeholderCount;
     var increment = Math.PI * (3 - Math.sqrt(5));
     for(var i=0;i<placeholderCount;i++){
