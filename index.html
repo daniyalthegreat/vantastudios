@@ -592,6 +592,30 @@ html { scrollbar-color: rgba(207,154,107,.4) #000; }
 .nebula-1 { opacity: .4; }
 .nebula-2 { opacity: .3; }
 
+/* ── PORTFOLIO GLOBE: real perspective, landscape tiles, mini-site placeholders ── */
+.pf3d-stage { perspective: 1000px; }
+.sphere-node { width: 98px; height: 68px; margin-left: -49px; margin-top: -34px; border-radius: 7px; border-color: rgba(255,255,255,.12); box-shadow: 0 8px 20px rgba(0,0,0,.55); backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.sphere-node img { object-position: left top; }
+.sphere-node .sn-label { left: 5px; bottom: 5px; max-width: calc(100% - 10px); overflow: hidden; text-overflow: ellipsis; font-size: .5rem; padding: 2px 6px; }
+.sphere-node.placeholder { display: block; background: linear-gradient(150deg, #17171a, #0d0d0f); }
+.sphere-node.placeholder i { position: absolute; display: block; font-style: normal; }
+.ph-bar { top: 0; left: 0; right: 0; height: 8px; background: rgba(255,255,255,.05); border-bottom: 1px solid rgba(255,255,255,.06); }
+.ph-line { height: 4px; border-radius: 2px; background: rgba(255,255,255,.16); }
+.ph-btn { height: 7px; width: 24px; border-radius: 4px; background: var(--ph-accent, rgba(255,255,255,.22)); }
+.ph-block { border-radius: 4px; background: rgba(255,255,255,.07); }
+.v0 .ph-line.a { top: 20px; left: 9px; width: 52%; }
+.v0 .ph-line.b { top: 29px; left: 9px; width: 34%; background: rgba(255,255,255,.09); }
+.v0 .ph-btn { top: 42px; left: 9px; }
+.v0 .ph-block { right: 8px; bottom: 8px; width: 26px; height: 18px; }
+.v1 .ph-block { top: 14px; left: 8px; right: 8px; height: 26px; }
+.v1 .ph-line.a { top: 46px; left: 9px; width: 60%; }
+.v1 .ph-line.b { top: 55px; left: 9px; width: 38%; background: rgba(255,255,255,.09); }
+.v1 .ph-btn { top: 54px; right: 9px; }
+.v2 .ph-block { top: 14px; left: 8px; width: 30px; height: 46px; }
+.v2 .ph-line.a { top: 19px; left: 46px; width: 44%; }
+.v2 .ph-line.b { top: 28px; left: 46px; width: 30%; background: rgba(255,255,255,.09); }
+.v2 .ph-btn { top: 42px; left: 46px; }
+
 /* small gold text touches */
 .label { color: var(--accent); }
 .label::before { background: var(--accent); opacity: .9; }
@@ -1721,36 +1745,75 @@ html { scrollbar-color: rgba(207,154,107,.4) #000; }
       { src:'blendz.PNG', label:'BLENDZ · Barber Studio' },
       { src:'bazmeadab.PNG', label:'Bazme Adab · Education' }
     ];
+
+    /* the globe is built from latitude rings of tiles, like a photo-sphere gallery */
+    var rings = [
+      { lat:  67.5, n: 5,  off: .5 },
+      { lat:  45,   n: 8,  off: 0  },
+      { lat:  22.5, n: 11, off: .5 },
+      { lat:  0,    n: 12, off: 0  },
+      { lat: -22.5, n: 11, off: .5 },
+      { lat: -45,   n: 8,  off: 0  },
+      { lat: -67.5, n: 5,  off: .5 }
+    ];
+    var D2R = Math.PI / 180;
     var nodesData = [];
-    nodesData.push({ x:0, y:0, z:R, real: realCards[0] });   // front: same card as the hero
-    nodesData.push({ x:0, y:0, z:-R, real: realCards[1] });  // exact antipode
-    nodesData.push({ x:R, y:0, z:0, real: realCards[2] });   // third real project, on the equator
-    nodesData.push({ x:-R, y:0, z:0, real: realCards[3] });  // fourth real project, opposite side of the equator
-    nodesData.push({ x:0, y:R, z:0, real: realCards[4] });   // fifth real project, top of the sphere
-    nodesData.push({ x:0, y:-R, z:0, real: realCards[5] });  // sixth real project (BLENDZ), bottom pole
-    nodesData.push({ x:R*0.72, y:R*0.5, z:-R*0.47, real: realCards[6] }); // seventh real project (Bazme Adab), upper-right, back-ish, off-axis
+    rings.forEach(function(ring){
+      for(var k = 0; k < ring.n; k++){
+        var lon = (k + ring.off) * 360 / ring.n;
+        if(lon > 180) lon -= 360;
+        var la = ring.lat * D2R, lo = lon * D2R;
+        nodesData.push({
+          lat: ring.lat, lon: lon,
+          x: R * Math.cos(la) * Math.sin(lo),
+          y: -R * Math.sin(la),
+          z: R * Math.cos(la) * Math.cos(lo),
+          real: null
+        });
+      }
+    });
 
-    var placeholderCount = 13;
-    var offset = 2 / placeholderCount;
-    var increment = Math.PI * (3 - Math.sqrt(5));
-    for(var i=0;i<placeholderCount;i++){
-      var yv = ((i*offset) - 1) + (offset/2);
-      var rad = Math.sqrt(Math.max(0, 1 - yv*yv));
-      var phi = i * increment;
-      var xv = Math.cos(phi) * rad;
-      var zv = Math.sin(phi) * rad;
-      if(Math.abs(zv) > 0.9 || Math.abs(yv) > 0.85 || (Math.abs(xv) > 0.9 && Math.abs(yv) < 0.1)) continue;
-      nodesData.push({ x: xv*R, y: yv*R, z: zv*R, real: null });
-    }
+    /* where each real project sits on the globe: [card index, latitude, longitude] */
+    var realSpots = [
+      [0,   0,     0],   // PizzaX: dead centre, matches the hero card
+      [4,  45,    50],   // Atelier
+      [2, -22.5, 100],   // PetPaws
+      [1,   0,   180],   // PulseFit: exact antipode of PizzaX
+      [3,  22.5,-140],   // Bolton Market
+      [5, -22.5,-100],   // BLENDZ
+      [6,  22.5, -50]    // Bazme Adab
+    ];
+    realSpots.forEach(function(spot){
+      var best = -1, bestDot = -2;
+      var la = spot[1] * D2R, lo = spot[2] * D2R;
+      nodesData.forEach(function(nd, i){
+        if(nd.real) return;
+        var nla = nd.lat * D2R, nlo = nd.lon * D2R;
+        var dot = Math.sin(la)*Math.sin(nla) + Math.cos(la)*Math.cos(nla)*Math.cos(lo - nlo);
+        if(dot > bestDot){ bestDot = dot; best = i; }
+      });
+      if(best > -1) nodesData[best].real = realCards[spot[0]];
+    });
 
-    var nodeEls = nodesData.map(function(d){
+    /* placeholder tiles look like tiny dark websites, each a little different */
+    function seeded(i){ var v = Math.sin(i * 127.1 + 311.7) * 43758.5453; return v - Math.floor(v); }
+    var hues = [28, 210, 160, 0, 340, 45, 260];
+    var nodeEls = nodesData.map(function(d, i){
       var el = document.createElement('div');
-      el.className = 'sphere-node' + (d.real ? '' : ' placeholder');
-      el.innerHTML = d.real
-        ? '<img src="'+d.real.src+'" alt="" loading="lazy" decoding="async"><span class="sn-label">'+d.real.label+'</span>'
-        : '<i class="fa-solid fa-image"></i>';
+      if(d.real){
+        el.className = 'sphere-node';
+        el.innerHTML = '<img src="'+d.real.src+'" alt="" loading="lazy" decoding="async"><span class="sn-label">'+d.real.label.split(' · ')[0]+'</span>';
+      } else {
+        var hue = hues[Math.floor(seeded(i + 1) * hues.length)];
+        var sat = 8 + seeded(i + 2) * 14;
+        var l1 = 13 + seeded(i + 3) * 6;
+        el.className = 'sphere-node placeholder v' + Math.floor(seeded(i + 4) * 3);
+        el.style.background = 'linear-gradient(150deg,hsl('+hue+','+sat+'%,'+l1+'%),hsl('+hue+','+sat+'%,'+(l1 - 6)+'%))';
+        el.style.setProperty('--ph-accent', seeded(i + 5) < .35 ? 'rgba(207,154,107,.65)' : 'rgba(255,255,255,.22)');
+        el.innerHTML = '<i class="ph-bar"></i><i class="ph-line a"></i><i class="ph-line b"></i><i class="ph-btn"></i><i class="ph-block"></i>';
+      }
       sphere.appendChild(el);
-      return { el: el, x: d.x, y: d.y, z: d.z };
+      return { el: el, x: d.x, y: d.y, z: d.z, real: !!d.real };
     });
 
     var scrollRange = 0;
@@ -1786,10 +1849,15 @@ html { scrollbar-color: rgba(207,154,107,.4) #000; }
       nodeEls.forEach(function(n){
         var rx = n.x*cosT + n.z*sinT;
         var rz = -n.x*sinT + n.z*cosT;
-        var depth = (rz + R) / (2*R);
-        var scale = (0.55 + depth*0.65) * sphereInP * expandScale;
-        n.el.style.transform = 'translate3d(' + rx + 'px,' + n.y + 'px,' + rz + 'px) scale(' + scale + ')';
-        n.el.style.opacity = Math.max(0.15, depth) * sphereInP * expandFade;
+        /* each tile faces straight out from the globe centre, top edge pointing north */
+        var len = Math.sqrt(rx*rx + n.y*n.y + rz*rz) || 1;
+        var nx = rx/len, ny = n.y/len, nz = rz/len;
+        var yaw = Math.atan2(nx, nz) * 57.29578;
+        var pitch = -Math.asin(Math.max(-1, Math.min(1, ny))) * 57.29578;
+        var scale = sphereInP * expandScale;
+        var facing = nz > 0 ? (0.25 + 0.75*nz) : 0;
+        n.el.style.transform = 'translate3d(' + rx + 'px,' + n.y + 'px,' + rz + 'px) rotateY(' + yaw + 'deg) rotateX(' + pitch + 'deg) scale(' + scale + ')';
+        n.el.style.opacity = facing * sphereInP * expandFade * (n.real ? 1 : 0.82);
         n.el.style.zIndex = Math.round(rz + 1000);
       });
     }
